@@ -93,7 +93,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="bg-[#ffffff] rounded-[28px] sm:rounded-[36px] border border-[#ececee] overflow-hidden select-none transition-all shadow-xs isolate"
+        className="bg-[#ffffff] rounded-[16px] sm:rounded-[20px] border border-[#ececee] overflow-hidden select-none transition-all shadow-xs"
       >
         
         {/* Month Navigation Header + Weekday Bar */}
@@ -168,7 +168,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         </div>
 
         {/* Calendar Days Grid (한 달 전체 주 단위 렌더링) */}
-        <div className="bg-[#ececee] flex flex-col gap-px transition-all rounded-b-[27px] sm:rounded-b-[35px] overflow-hidden">
+        <div className="bg-[#ececee] flex flex-col gap-px transition-all rounded-b-[15px] sm:rounded-b-[19px] overflow-hidden">
           {allWeeks.map((week, weekIdx) => {
             const isLastWeek = weekIdx === allWeeks.length - 1;
             return (
@@ -184,10 +184,10 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                     <div
                       key={day.dateString}
                       onClick={() => setSelectedDateStr(day.dateString)}
-                      className={`min-h-[72px] sm:min-h-[82px] lg:min-h-[86px] p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group overflow-hidden ${
-                        isBottomLeft ? 'rounded-bl-[26px] sm:rounded-bl-[34px]' : ''
+                      className={`min-h-[72px] sm:min-h-[82px] lg:min-h-[86px] p-1 sm:p-1.5 pb-2 pr-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group overflow-hidden ${
+                        isBottomLeft ? 'rounded-bl-[15px] sm:rounded-bl-[19px]' : ''
                       } ${
-                        isBottomRight ? 'rounded-br-[26px] sm:rounded-br-[34px]' : ''
+                        isBottomRight ? 'rounded-br-[15px] sm:rounded-br-[19px]' : ''
                       } ${
                         !day.isCurrentMonth
                           ? 'bg-[#fafafa] text-[#a1a1aa]'
