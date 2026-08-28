@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ShieldCheck, KeyRound, AlertCircle } from 'lucide-react';
+import { X, ShieldCheck, KeyRound, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
 import { ADMIN_PASSWORDS } from '../data/presetData';
 
@@ -21,10 +21,12 @@ export const AuthPasswordModal: React.FC<AuthPasswordModalProps> = ({
   onSuccess,
 }) => {
   const [inputPassword, setInputPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     setInputPassword('');
+    setShowPassword(true);
     setErrorMsg('');
   }, [isOpen]);
 
@@ -95,7 +97,7 @@ export const AuthPasswordModal: React.FC<AuthPasswordModalProps> = ({
           
           {targetSchedule && actionType !== 'admin-login' && (
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs text-slate-600">
-              <p className="font-bold text-slate-800">[{targetSchedule.cellLeader}] 전도 일정</p>
+              <p className="font-bold text-slate-800">[{targetSchedule.cellName}] 전도 일정</p>
               <p className="text-[11px] text-slate-400 mt-0.5">{targetSchedule.date} | {targetSchedule.location}</p>
             </div>
           )}
@@ -108,18 +110,28 @@ export const AuthPasswordModal: React.FC<AuthPasswordModalProps> = ({
           )}
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-700">
-              비밀번호 입력
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-700">
+                비밀번호 입력
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                <span>{showPassword ? '가리기' : '보기'}</span>
+              </button>
+            </div>
             <div className="relative">
               <KeyRound className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 autoFocus
                 value={inputPassword}
                 onChange={(e) => setInputPassword(e.target.value)}
                 placeholder="신청 시 입력한 비밀번호 또는 관리자 번호"
-                className="w-full pl-9 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full pl-9 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono tracking-wider font-bold text-slate-800"
               />
             </div>
             <p className="text-[11px] text-slate-400">

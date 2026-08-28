@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Sparkles, Lock } from 'lucide-react';
+import { X, Calendar, Sparkles, Lock, Eye, EyeOff } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
 import { CORPS_PRESETS, LOCATION_PRESETS, CELL_COLORS, COLOR_KEYS, getCellColor } from '../data/presetData';
 import { getDayOfWeekKorean, calculateDurationMinutes, formatDurationString } from '../utils/dateUtils';
@@ -37,6 +37,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
   const [participantInput, setParticipantInput] = useState('');
   const [prayerTopics, setPrayerTopics] = useState('');
   const [password, setPassword] = useState('1234');
+  const [showPassword, setShowPassword] = useState(true);
   const [themeColor, setThemeColor] = useState('blue');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -513,17 +514,27 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
           {/* 7. 수정/삭제용 비밀번호 설정 */}
           <div className="space-y-1.5 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
-            <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-blue-600" />
-              <span>신청 비밀번호 (수정/삭제용)</span> <span className="text-rose-500">*</span>
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-blue-600" />
+                <span>신청 비밀번호 (수정/삭제용)</span> <span className="text-rose-500">*</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                <span>{showPassword ? '가리기' : '보기'}</span>
+              </button>
+            </div>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               maxLength={12}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호 4자리 입력 (예: 1234)"
-              className="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono"
+              placeholder="비밀번호 입력 (예: 1234)"
+              className="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono tracking-wider font-bold text-slate-800"
               required
             />
             <p className="text-[11px] text-slate-400">
