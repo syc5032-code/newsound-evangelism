@@ -125,6 +125,11 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                     >
                       {day.getDate()}
                     </span>
+                    {dayToday && (
+                      <span className="text-[10px] font-extrabold text-[#ff5a00] tracking-wider">
+                        TODAY
+                      </span>
+                    )}
                   </div>
 
                   <button

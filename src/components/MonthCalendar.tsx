@@ -141,7 +141,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                       {day.dayNumber}
                     </span>
                     {day.isToday && (
-                      <span className="hidden md:inline-block text-[9px] font-bold text-[#09090b]">
+                      <span className="hidden sm:inline-block text-[10px] font-extrabold text-[#ff5a00] tracking-wider">
                         TODAY
                       </span>
                     )}
