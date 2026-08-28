@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Clock, Flame, CalendarCheck2, MapPin, ArrowRight, Sparkles, Trophy, HeartHandshake } from 'lucide-react';
+import { Users, Clock, Flame, CalendarCheck2, MapPin, ArrowRight, Sparkles, Trophy, ShieldCheck } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
 import { formatDurationString, getDDayString } from '../utils/dateUtils';
 import { CORPS_PRESETS } from '../data/presetData';
@@ -9,12 +9,14 @@ interface StatsBannerProps {
   schedules: EvangelismSchedule[];
   currentDate: Date;
   onSelectSchedule: (schedule: EvangelismSchedule) => void;
+  isAdmin?: boolean;
 }
 
 export const StatsBanner: React.FC<StatsBannerProps> = ({
   schedules,
   currentDate,
   onSelectSchedule,
+  isAdmin = false,
 }) => {
   // Filter for currently viewed month
   const thisMonthSchedules = schedules.filter((s) => {
@@ -62,7 +64,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
 
   const nextUpcoming = sortedUpcoming.length > 0 ? sortedUpcoming[0] : null;
 
-  // Calculate corps activity ranking
+  // Calculate corps activity ranking (Admin only)
   const corpsStats: { [name: string]: { count: number; participants: number } } = {};
   CORPS_PRESETS.forEach((c) => {
     corpsStats[c] = { count: 0, participants: 0 };
@@ -82,36 +84,19 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
   return (
     <div className="space-y-4 mb-6">
       
-      {/* 🌟 Top Grace & Scripture Banner */}
+      {/* 🌟 Top Scripture Banner (오직 성령이 너희에게 임하시면...) */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 text-white p-4 sm:p-5 shadow-lg shadow-blue-500/15 border border-blue-400/30">
-        {/* Background glow circle */}
+        {/* Background glow circles */}
         <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute left-1/3 -top-10 w-32 h-32 bg-indigo-300/20 rounded-full blur-xl pointer-events-none" />
 
-        <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xs shrink-0">
-              <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-200 bg-white/10 px-2 py-0.5 rounded-full border border-white/10">
-                  Today's Mission Word
-                </span>
-                <span className="text-xs text-blue-100 hidden sm:inline">2026 뉴사운드 노방전도 비전</span>
-              </div>
-              <p className="text-sm sm:text-base font-bold text-white mt-1 leading-snug">
-                "너희는 온 천하에 다니며 만민에게 복음을 전파하라 (마가복음 16:15)"
-              </p>
-            </div>
+        <div className="relative flex items-center gap-3 sm:gap-3.5">
+          <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xs shrink-0">
+            <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
           </div>
-
-          <div className="flex items-center gap-2 self-stretch md:self-auto justify-end">
-            <div className="px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-white/95 flex items-center gap-1.5">
-              <HeartHandshake className="w-4 h-4 text-rose-300" />
-              <span>함께 영혼을 살리는 공동체</span>
-            </div>
-          </div>
+          <p className="text-sm sm:text-base font-bold text-white leading-relaxed">
+            "오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅끝까지 이르러 내 증인이 되리라 하시니라 (사도행전 1:8)"
+          </p>
         </div>
       </div>
 
@@ -236,69 +221,74 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
 
       </div>
 
-      {/* 🎖️ Corps Activity Race (군단별 전도 활성도 현황판) */}
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Trophy className="w-3.5 h-3.5" />
+      {/* 🎖️ Corps Activity Race (군단별 전도 활성도 현황판 - 관리자 전용) */}
+      {isAdmin && (
+        <div className="bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs animate-in fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <Trophy className="w-3.5 h-3.5" />
+              </div>
+              <h3 className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                <span>군단별 전도 출격 현황</span>
+                <span className="px-2 py-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 rounded-md border border-emerald-200 flex items-center gap-0.5">
+                  <ShieldCheck className="w-3 h-3" /> 관리자 전용
+                </span>
+              </h3>
+              <span className="text-[11px] text-slate-400">
+                (전체 {schedules.length}회 출격)
+              </span>
             </div>
-            <h3 className="text-xs sm:text-sm font-bold text-slate-800">
-              군단별 전도 출격 현황
-            </h3>
-            <span className="text-[11px] text-slate-400">
-              전체 {schedules.length}회 출격
+            <span className="text-[11px] text-slate-400 font-medium">
+              * 각 군단 소속 셀들의 전도 일정이 실시간으로 합산됩니다
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 font-medium">
-            * 각 군단 소속 셀들의 전도 일정이 실시간으로 합산됩니다
-          </span>
-        </div>
 
-        {/* Corps Progress Bars Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {CORPS_PRESETS.map((corpsName, idx) => {
-            const stat = corpsStats[corpsName] || { count: 0, participants: 0 };
-            const percentage = maxCorpsCount > 0 ? Math.round((stat.count / maxCorpsCount) * 100) : 0;
+          {/* Corps Progress Bars Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {CORPS_PRESETS.map((corpsName, idx) => {
+              const stat = corpsStats[corpsName] || { count: 0, participants: 0 };
+              const percentage = maxCorpsCount > 0 ? Math.round((stat.count / maxCorpsCount) * 100) : 0;
 
-            const badgeColors = [
-              'bg-blue-500',
-              'bg-indigo-500',
-              'bg-violet-500',
-              'bg-emerald-500',
-              'bg-amber-500',
-              'bg-rose-500',
-              'bg-cyan-500',
-            ];
-            const barColor = badgeColors[idx % badgeColors.length];
+              const badgeColors = [
+                'bg-blue-500',
+                'bg-indigo-500',
+                'bg-violet-500',
+                'bg-emerald-500',
+                'bg-amber-500',
+                'bg-rose-500',
+                'bg-cyan-500',
+              ];
+              const barColor = badgeColors[idx % badgeColors.length];
 
-            return (
-              <div
-                key={corpsName}
-                className="p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100/70 border border-slate-200/60 transition-colors"
-              >
-                <div className="flex items-center justify-between text-xs mb-1.5">
-                  <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                    <span className={`w-2 h-2 rounded-full ${barColor}`} />
-                    <span>{corpsName}</span>
-                  </span>
-                  <span className="text-[11px] font-bold text-slate-600">
-                    <strong className="text-blue-600">{stat.count}</strong>회 <span className="text-slate-400 font-normal">({stat.participants}명)</span>
-                  </span>
+              return (
+                <div
+                  key={corpsName}
+                  className="p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100/70 border border-slate-200/60 transition-colors"
+                >
+                  <div className="flex items-center justify-between text-xs mb-1.5">
+                    <span className="font-bold text-slate-800 flex items-center gap-1.5">
+                      <span className={`w-2 h-2 rounded-full ${barColor}`} />
+                      <span>{corpsName}</span>
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-600">
+                      <strong className="text-blue-600">{stat.count}</strong>회 <span className="text-slate-400 font-normal">({stat.participants}명)</span>
+                    </span>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="w-full bg-slate-200/80 rounded-full h-2 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${barColor} transition-all duration-500`}
+                      style={{ width: `${Math.max(percentage, stat.count > 0 ? 8 : 0)}%` }}
+                    />
+                  </div>
                 </div>
-                
-                {/* Progress Bar */}
-                <div className="w-full bg-slate-200/80 rounded-full h-2 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${barColor} transition-all duration-500`}
-                    style={{ width: `${Math.max(percentage, stat.count > 0 ? 8 : 0)}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
   );

@@ -262,6 +262,7 @@ export function App() {
           schedules={filteredSchedules}
           currentDate={currentDate}
           onSelectSchedule={(s) => setSelectedDetailSchedule(s)}
+          isAdmin={isAdmin}
         />
 
         {/* Search & Filter Bar */}
