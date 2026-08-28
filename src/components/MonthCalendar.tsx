@@ -78,7 +78,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         </div>
 
         {/* Weekday Header (일 ~ 토) */}
-        <div className="grid grid-cols-7 border-b border-[#ececee] bg-[#f4f4f5] text-center py-2 text-xs font-semibold">
+        <div className="grid grid-cols-7 border-b border-[#ececee] bg-[#ffffff] text-center py-2 text-xs font-semibold">
           {KOREAN_DAYS.map((day, idx) => {
             const isSun = idx === 0;
             const isSat = idx === 6;
@@ -113,11 +113,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 className={`min-h-[76px] sm:min-h-[145px] p-1.5 sm:p-2.5 bg-[#ffffff] transition-colors relative flex flex-col justify-between cursor-pointer group ${
                   !day.isCurrentMonth
                     ? 'bg-[#fafafa] text-[#a1a1aa]'
-                    : isSun
-                    ? 'bg-rose-50/15'
-                    : isSat
-                    ? 'bg-blue-50/15'
-                    : 'text-[#18181b]'
+                    : 'bg-[#ffffff] text-[#18181b]'
                 } ${
                   isSelected
                     ? 'ring-2 ring-inset ring-[#09090b] bg-[#f4f4f5] z-10'
@@ -229,7 +225,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
 
       </div>
 
-      {/* 📱 Selected Date Detail Panel (특히 모바일에서 터치했을 때 시원하게 모든 내용을 보여주는 패널) */}
+      {/* 📱 Selected Date Detail Panel */}
       <div className="bg-[#ffffff] rounded-[28px] border border-[#ececee] p-5 sm:p-6">
         <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-[#ececee]">
           <div className="flex items-center gap-2">

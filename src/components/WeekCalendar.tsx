@@ -94,10 +94,6 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
               className={`p-3 sm:p-4 flex flex-col justify-between ${
                 dayToday
                   ? 'bg-[#f4f4f5] ring-1 ring-inset ring-[#09090b]'
-                  : isSun
-                  ? 'bg-rose-50/10'
-                  : isSat
-                  ? 'bg-blue-50/10'
                   : 'bg-[#ffffff]'
               }`}
             >
