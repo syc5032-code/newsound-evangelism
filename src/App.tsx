@@ -8,6 +8,7 @@ import { ListView } from './components/ListView';
 import { ApplicationModal } from './components/ApplicationModal';
 import { DetailModal } from './components/DetailModal';
 import { DataManagementModal } from './components/DataManagementModal';
+import { AuthPasswordModal } from './components/AuthPasswordModal';
 import { Toast } from './components/Toast';
 import type { ToastMessage } from './components/Toast';
 import type { EvangelismSchedule, ViewMode } from './types';
@@ -26,14 +27,22 @@ export function App() {
   const [selectedCell, setSelectedCell] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
 
-  // 3. Modals State
+  // 3. Admin & Auth State
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    return localStorage.getItem('NEWSOUND_IS_ADMIN') === 'true';
+  });
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authActionType, setAuthActionType] = useState<'edit' | 'delete' | 'admin-login'>('edit');
+  const [authTargetSchedule, setAuthTargetSchedule] = useState<EvangelismSchedule | null>(null);
+
+  // 4. Modals State
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [applyModalInitialDate, setApplyModalInitialDate] = useState<string | undefined>(undefined);
   const [editingSchedule, setEditingSchedule] = useState<EvangelismSchedule | null>(null);
   const [selectedDetailSchedule, setSelectedDetailSchedule] = useState<EvangelismSchedule | null>(null);
   const [isDataModalOpen, setIsDataModalOpen] = useState(false);
 
-  // 4. Toast Notifications
+  // 5. Toast Notifications
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const addToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
@@ -50,10 +59,15 @@ export function App() {
     saveSchedules(schedules);
   }, [schedules]);
 
+  // Sync Admin status to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('NEWSOUND_IS_ADMIN', isAdmin ? 'true' : 'false');
+  }, [isAdmin]);
+
   // Filtered schedules
   const filteredSchedules = useMemo(() => {
     return schedules.filter((item) => {
-      // Cell filter
+      // Corps filter
       if (selectedCell && item.cellName !== selectedCell) return false;
       // Location filter
       if (selectedLocation && item.location !== selectedLocation) return false;
@@ -88,11 +102,11 @@ export function App() {
       setSchedules((prev) =>
         prev.map((item) => (item.id === schedule.id ? schedule : item))
       );
-      addToast(`[${schedule.cellName}] 노방전도 일정이 수정되었습니다.`, 'success');
+      addToast(`[${schedule.cellLeader}] 노방전도 일정이 수정되었습니다.`, 'success');
       setEditingSchedule(null);
     } else {
       setSchedules((prev) => [schedule, ...prev]);
-      addToast(`[${schedule.cellName}] 노방전도 신청이 성공적으로 등록되었습니다! 🎉`, 'success');
+      addToast(`[${schedule.cellLeader}] 노방전도 신청이 성공적으로 등록되었습니다! 🎉`, 'success');
     }
   };
 
@@ -103,7 +117,7 @@ export function App() {
     if (selectedDetailSchedule?.id === id) {
       setSelectedDetailSchedule(null);
     }
-    addToast(`[${target?.cellName || '일정'}] 노방전도 일정이 삭제되었습니다.`, 'info');
+    addToast(`[${target?.cellLeader || '일정'}] 노방전도 일정이 삭제되었습니다.`, 'info');
   };
 
   // Schedule Edit Handler
@@ -111,6 +125,31 @@ export function App() {
     setEditingSchedule(schedule);
     setSelectedDetailSchedule(null);
     setIsApplyModalOpen(true);
+  };
+
+  // Auth request handler from DetailModal
+  const handleRequestAuth = (schedule: EvangelismSchedule, action: 'edit' | 'delete') => {
+    setAuthTargetSchedule(schedule);
+    setAuthActionType(action);
+    setIsAuthModalOpen(true);
+  };
+
+  // Auth success callback
+  const handleAuthSuccess = () => {
+    if (authActionType === 'admin-login') {
+      setIsAdmin(true);
+      addToast('관리자 모드로 전환되었습니다. 🛡️ (모든 일정 관리 가능)', 'success');
+    } else if (authActionType === 'edit' && authTargetSchedule) {
+      handleStartEditSchedule(authTargetSchedule);
+    } else if (authActionType === 'delete' && authTargetSchedule) {
+      handleDeleteSchedule(authTargetSchedule.id);
+    }
+  };
+
+  // Admin logout
+  const handleAdminLogout = () => {
+    setIsAdmin(false);
+    addToast('관리자 모드가 해제되었습니다.', 'info');
   };
 
   // Copy Kakao text handler
@@ -168,6 +207,13 @@ export function App() {
           setIsApplyModalOpen(true);
         }}
         onOpenDataModal={() => setIsDataModalOpen(true)}
+        isAdmin={isAdmin}
+        onOpenAdminLogin={() => {
+          setAuthTargetSchedule(null);
+          setAuthActionType('admin-login');
+          setIsAuthModalOpen(true);
+        }}
+        onAdminLogout={handleAdminLogout}
       />
 
       {/* Main Content Area */}
@@ -251,9 +297,24 @@ export function App() {
       <DetailModal
         schedule={selectedDetailSchedule}
         onClose={() => setSelectedDetailSchedule(null)}
+        isAdmin={isAdmin}
         onEdit={handleStartEditSchedule}
         onDelete={handleDeleteSchedule}
+        onRequestAuth={handleRequestAuth}
         onCopyShareText={handleCopyShareText}
+      />
+
+      {/* Password Authentication Modal */}
+      <AuthPasswordModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setAuthTargetSchedule(null);
+        }}
+        targetSchedule={authTargetSchedule}
+        actionType={authActionType}
+        isAdmin={isAdmin}
+        onSuccess={handleAuthSuccess}
       />
 
       {/* Data Management & Export Modal */}

@@ -1,5 +1,7 @@
 import type { EvangelismSchedule } from '../types';
 
+export const ADMIN_PASSWORDS = ['newsound77', '7777', '1234'];
+
 export const CORPS_PRESETS = [
   '김태홍',
   '김은진'
@@ -104,6 +106,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 6,
     participants: ['송예찬', '이지훈', '박서연', '최도윤', '정유나', '강민호'],
     prayerTopics: '불금 퇴근길 마곡역을 지나는 많은 직장인들과 청년들의 마음 문이 열려 복음이 전해지게 하시고, 셀원들이 담대하고 기쁨으로 전도하도록 중보해주세요.',
+    password: '1234',
     themeColor: 'blue',
     createdAt: '2026-08-20T10:00:00.000Z'
   },
@@ -122,6 +125,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 7,
     participants: ['권회인', '송미경', '임재원', '한수빈', '조형석', '김지혜', '박성현'],
     prayerTopics: '주말 오후 롯데리아 앞을 오가는 청소년들과 이웃들에게 예수님의 사랑이 따뜻하고 친절하게 전해지기를 기도합니다.',
+    password: '1234',
     themeColor: 'emerald',
     createdAt: '2026-08-21T14:30:00.000Z'
   },
@@ -140,6 +144,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 5,
     participants: ['윤수민', '오수진', '배성현', '문채원', '차은우'],
     prayerTopics: '주일 예배 후 전도 출격합니다. 만나는 모든 영혼들이 주님의 평안을 얻고 교회로 발걸음이 이어지도록 함께 기도해주세요.',
+    password: '1234',
     themeColor: 'violet',
     createdAt: '2026-08-22T09:15:00.000Z'
   },
@@ -158,6 +163,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 6,
     participants: ['한은택', '이영희', '유태현', '서지원', '노현우', '고은비'],
     prayerTopics: '수요예배 전 퇴근길 전도입니다. 지친 현대인들에게 복음의 참된 위로와 생수가 흘러가게 하소서.',
+    password: '1234',
     themeColor: 'amber',
     createdAt: '2026-08-23T11:20:00.000Z'
   },
@@ -176,6 +182,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 8,
     participants: ['박창현', '정하늘', '이준우', '김하은', '신재민', '권다영', '황성호', '안지민'],
     prayerTopics: '토요일 오전 마곡역 전도 출격합니다. 셀원들이 성령 충만하여 담대하게 복음을 전하고 구원의 열매를 맺게 하소서.',
+    password: '1234',
     themeColor: 'rose',
     createdAt: '2026-08-24T16:40:00.000Z'
   },
@@ -194,6 +201,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 6,
     participants: ['송예찬', '이지훈', '최도윤', '강민호', '류수정', '장민석'],
     prayerTopics: '거리에서 마주치는 모든 이웃들에게 친절한 미소와 따뜻한 마음으로 다가가겠습니다.',
+    password: '1234',
     themeColor: 'blue',
     createdAt: '2026-08-25T13:00:00.000Z'
   },
@@ -212,6 +220,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 7,
     participants: ['권회인', '송미경', '임재원', '조형석', '차은우', '우지민', '구본승'],
     prayerTopics: '셀원들이 기쁨으로 하나 되어 전도에 동참하게 하시고, 복음을 들은 모든 분들이 구원의 확신을 갖도록 중보 부탁드립니다.',
+    password: '1234',
     themeColor: 'emerald',
     createdAt: '2026-08-26T15:10:00.000Z'
   },
@@ -230,6 +239,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 5,
     participants: ['윤수민', '오수진', '배성현', '문채원', '하성운'],
     prayerTopics: '지역 상권 주민들과 청년들에게 축복의 말을 전하며 복음의 씨앗을 심겠습니다.',
+    password: '1234',
     themeColor: 'violet',
     createdAt: '2026-08-27T10:00:00.000Z'
   },
@@ -248,6 +258,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 6,
     participants: ['한은택', '이영희', '유태현', '서지원', '노현우', '고은비'],
     prayerTopics: '환절기 날씨 속에서 전도대원들의 건강을 지켜주시고 담대하게 복음을 증거하게 하소서.',
+    password: '1234',
     themeColor: 'amber',
     createdAt: '2026-08-27T14:20:00.000Z'
   },
@@ -266,6 +277,7 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
     participantCount: 8,
     participants: ['박창현', '정하늘', '이준우', '김하은', '신재민', '권다영', '황성호', '안지민'],
     prayerTopics: '9월의 마지막 주말 전도입니다. 그동안 복음을 전해 들은 분들이 예배의 자리로 나아오도록 기도해주세요.',
+    password: '1234',
     themeColor: 'rose',
     createdAt: '2026-08-27T16:00:00.000Z'
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Sparkles } from 'lucide-react';
+import { X, Calendar, Sparkles, Lock } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
 import { CORPS_PRESETS, LOCATION_PRESETS, CELL_COLORS, COLOR_KEYS, getCellColor } from '../data/presetData';
 import { getDayOfWeekKorean, calculateDurationMinutes, formatDurationString } from '../utils/dateUtils';
@@ -35,6 +35,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
   const [participants, setParticipants] = useState<string[]>([]);
   const [participantInput, setParticipantInput] = useState('');
   const [prayerTopics, setPrayerTopics] = useState('');
+  const [password, setPassword] = useState('1234');
   const [themeColor, setThemeColor] = useState('blue');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -50,6 +51,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       setParticipantCount(editSchedule.participantCount || 1);
       setParticipants(editSchedule.participants || []);
       setPrayerTopics(editSchedule.prayerTopics || '');
+      setPassword(editSchedule.password || '1234');
       setThemeColor(editSchedule.themeColor || 'blue');
     } else {
       // New application
@@ -64,6 +66,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       setParticipantCount(5);
       setParticipants([]);
       setPrayerTopics('');
+      setPassword('1234');
       setThemeColor('blue');
     }
     setErrorMsg('');
@@ -164,6 +167,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       participantCount: Math.max(participantCount, participants.length),
       participants,
       prayerTopics: prayerTopics.trim(),
+      password: password.trim() || '1234',
       themeColor: themeColor || getCellColor(corpsName),
       createdAt: editSchedule?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -267,7 +271,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 type="text"
                 value={cellLeader}
                 onChange={(e) => setCellLeader(e.target.value)}
-                placeholder="예: 김태홍"
+                placeholder="예: 송예찬 (송예찬셀)"
                 className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 required
               />
@@ -487,7 +491,27 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
             />
           </div>
 
-          {/* 7. 컬러 테마 선택 */}
+          {/* 7. 수정/삭제용 비밀번호 설정 */}
+          <div className="space-y-1.5 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
+            <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-blue-600" />
+              <span>신청 비밀번호 (수정/삭제용)</span> <span className="text-rose-500">*</span>
+            </label>
+            <input
+              type="password"
+              maxLength={12}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호 4자리 입력 (예: 1234)"
+              className="w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono"
+              required
+            />
+            <p className="text-[11px] text-slate-400">
+              * 등록 후 본인이 직접 일정을 수정하거나 취소할 때 사용됩니다.
+            </p>
+          </div>
+
+          {/* 8. 컬러 테마 선택 */}
           <div className="space-y-1.5">
             <span className="block text-xs font-bold text-slate-700">캘린더 배지 색상</span>
             <div className="flex items-center gap-2">

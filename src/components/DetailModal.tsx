@@ -7,16 +7,20 @@ import { formatDateFullKorean, formatDurationString, getDDayString } from '../ut
 interface DetailModalProps {
   schedule: EvangelismSchedule | null;
   onClose: () => void;
+  isAdmin: boolean;
   onEdit: (schedule: EvangelismSchedule) => void;
   onDelete: (id: string) => void;
+  onRequestAuth: (schedule: EvangelismSchedule, action: 'edit' | 'delete') => void;
   onCopyShareText: (schedule: EvangelismSchedule) => void;
 }
 
 export const DetailModal: React.FC<DetailModalProps> = ({
   schedule,
   onClose,
+  isAdmin,
   onEdit,
   onDelete,
+  onRequestAuth,
   onCopyShareText,
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -29,6 +33,23 @@ export const DetailModal: React.FC<DetailModalProps> = ({
 
   const participantNamesCount = schedule.participants ? schedule.participants.length : 0;
   const unassignedCount = Math.max(0, schedule.participantCount - participantNamesCount);
+
+  const handleEditClick = () => {
+    if (isAdmin) {
+      onEdit(schedule);
+      onClose();
+    } else {
+      onRequestAuth(schedule, 'edit');
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (isAdmin) {
+      setShowDeleteConfirm(true);
+    } else {
+      onRequestAuth(schedule, 'delete');
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
@@ -226,12 +247,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         {/* Modal Sticky Footer Actions */}
         <div className="p-4 sm:p-5 border-t border-slate-100 bg-slate-50/90 flex flex-wrap items-center justify-between gap-2.5">
           
-          {/* Left: Delete button */}
+          {/* Left: Delete & Edit buttons */}
           <div className="flex items-center gap-2">
             {!showDeleteConfirm && (
               <button
                 type="button"
-                onClick={() => setShowDeleteConfirm(true)}
+                onClick={handleDeleteClick}
                 className="flex items-center gap-1 px-3 py-2 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
                 title="일정 삭제"
               >
@@ -241,10 +262,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             )}
             <button
               type="button"
-              onClick={() => {
-                onEdit(schedule);
-                onClose();
-              }}
+              onClick={handleEditClick}
               className="flex items-center gap-1 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-200/60 rounded-xl transition-colors cursor-pointer"
               title="일정 수정"
             >

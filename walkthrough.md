@@ -1,21 +1,30 @@
-# 뉴사운드교회 노방전도 대시보드 Vercel 배포 완료 보고서
+# 뉴사운드교회 노방전도 대시보드 샘플 데이터 추가 완료 보고서
 
-뉴사운드교회 노방전도 대시보드 웹 애플리케이션의 GitHub 저장소 생성 및 Vercel 배포가 완료되었습니다.
-
----
-
-## 🌐 배포 주소 및 저장소 정보
-
-- **🚀 실시간 Vercel 배포 링크**: [https://temporary-fleet-cerulean-d5nuvpk.vercel.app](https://temporary-fleet-cerulean-d5nuvpk.vercel.app)
-- **🔐 Vercel 계정 영구 등록(Claim) 링크**: [https://vercel.com/claim-deployment?code=0acf4f43-d2fa-4d5c-8e09-092cbf4d65fa](https://vercel.com/claim-deployment?code=0acf4f43-d2fa-4d5c-8e09-092cbf4d65fa)
-- **📦 GitHub 소스코드 저장소**: [https://github.com/syc5032-code/newsound-evangelism](https://github.com/syc5032-code/newsound-evangelism)
+요청하신 **송예찬셀**, **권회인셀**, **윤수민셀**, **한은택셀**, **박창현셀**의 전도 일정 샘플 데이터 10건이 캘린더에 풍성하게 반영되었습니다.
 
 ---
 
-## 💡 계정 영구 연동 방법
+## 👥 추가된 샘플 일정 데이터 현황
 
-1. **방법 1 (간편 등록)**:
-   - 위의 [Vercel 계정 영구 등록 링크](https://vercel.com/claim-deployment?code=0acf4f43-d2fa-4d5c-8e09-092cbf4d65fa)를 브라우저에서 열고 로그인하시면, 현재 배포된 사이트가 본인 Vercel 계정으로 즉시 영구 이전됩니다.
+1. **송예찬셀 (김태홍 군단)**
+   - 2026.08.28(금) 19:00~20:30 | 마곡역 3번 출구 앞 (참여 6명)
+   - 2026.09.05(토) 14:00~16:30 | 롯데리아 앞 (참여 6명)
+2. **권회인셀 (김은진 군단)**
+   - 2026.08.29(토) 14:00~16:00 | 롯데리아 앞 (참여 7명)
+   - 2026.09.06(일) 16:00~18:00 | 마곡역 (참여 7명)
+3. **윤수민셀 (김태홍 군단)**
+   - 2026.08.30(일) 15:30~17:30 | 마곡역 2번 출구 앞 (참여 5명)
+   - 2026.09.12(토) 13:30~15:30 | 롯데리아 앞 (참여 5명)
+4. **한은택셀 (김은진 군단)**
+   - 2026.09.02(수) 18:30~20:00 | 롯데리아 앞 사거리 (참여 6명)
+   - 2026.09.19(토) 14:00~16:00 | 마곡역 1번 출구 앞 (참여 6명)
+5. **박창현셀 (김태홍 군단)**
+   - 2026.09.05(토) 10:30~12:30 | 마곡역 4번 출구 앞 (참여 8명)
+   - 2026.09.26(토) 15:00~17:00 | 마곡역 및 롯데리아 앞 (참여 8명)
 
-2. **방법 2 (GitHub 자동 배포 연동)**:
-   - [Vercel 대시보드](https://vercel.com/new)에 접속하여 **`newsound-evangelism`** GitHub 저장소를 Import하시면, 이후 코드 수정 및 푸시 시마다 자동으로 영구 배포됩니다.
+---
+
+## 🌐 실시간 확인 링크
+
+- **🚀 Vercel 배포 주소**: [https://temporary-fleet-cerulean-d5nuvpk.vercel.app](https://temporary-fleet-cerulean-d5nuvpk.vercel.app)
+- **💻 로컬 개발 서버**: [http://localhost:5173/](http://localhost:5173/)

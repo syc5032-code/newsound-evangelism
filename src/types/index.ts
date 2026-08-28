@@ -13,6 +13,7 @@ export interface EvangelismSchedule {
   participants: string[];
   supplies?: string[];
   prayerTopics: string;
+  password?: string; // 수정/삭제용 4자리 비밀번호
   themeColor: string; // Tailwind color theme identifier
   createdAt: string;
   updatedAt?: string;
