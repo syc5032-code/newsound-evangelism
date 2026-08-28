@@ -84,20 +84,64 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
   return (
     <div className="space-y-4 mb-6">
       
-      {/* 🌟 Top Scripture Banner (오직 성령이 너희에게 임하시면...) */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 text-white p-4 sm:p-5 shadow-lg shadow-blue-500/15 border border-blue-400/30">
-        {/* Background glow circles */}
-        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute left-1/3 -top-10 w-32 h-32 bg-indigo-300/20 rounded-full blur-xl pointer-events-none" />
+      {/* 🌟 Big Hero Scripture Banner with Image & Rich Typography */}
+      <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-900 text-white shadow-xl shadow-blue-600/15 border border-blue-400/30 p-5 sm:p-7 md:p-8 lg:p-10">
+        
+        {/* Background ambient lighting effects */}
+        <div className="absolute -right-16 -bottom-16 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute left-1/4 -top-20 w-72 h-72 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute left-0 bottom-0 w-64 h-64 bg-blue-400/10 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative flex items-center gap-3 sm:gap-3.5">
-          <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xs shrink-0">
-            <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          
+          {/* Left Column: Scripture Typography & Verse */}
+          <div className="lg:col-span-7 flex flex-col justify-center">
+            
+            {/* Top Sparkle Pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-bold text-blue-100 self-start mb-3.5 shadow-xs">
+              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+              <span>NEWSOUND STREET EVANGELISM</span>
+            </div>
+
+            {/* Main Scripture Text */}
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[27px] font-black text-white leading-snug sm:leading-tight tracking-tight text-balance">
+              “ 오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅끝까지 이르러 내 증인이 되리라 하시니라 ”
+            </h2>
+
+            {/* Scripture Reference & Subtitle */}
+            <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-2 sm:gap-3">
+              <span className="px-3 py-1 rounded-xl bg-amber-400/25 border border-amber-300/40 text-amber-200 text-xs sm:text-sm font-black tracking-wide shadow-xs">
+                사도행전 1장 8절
+              </span>
+              <span className="text-xs sm:text-sm text-blue-100 font-medium">
+                성령의 능력으로 거리에 나가 복음의 빛을 비추는 사역
+              </span>
+            </div>
+
           </div>
-          <p className="text-sm sm:text-base font-bold text-white leading-relaxed">
-            "오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅끝까지 이르러 내 증인이 되리라 하시니라 (사도행전 1:8)"
-          </p>
+
+          {/* Right Column: Hero Visual Artwork */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+            <div className="relative group w-full max-w-md lg:max-w-none rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-indigo-950/40 border-2 border-white/25 aspect-[16/10] sm:aspect-[16/9] lg:h-56">
+              <img
+                src="/hero-evangelism.jpg"
+                alt="뉴사운드교회 노방전도 비전"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-white text-xs font-bold drop-shadow-md">
+                <span className="flex items-center gap-1">
+                  <span>🕊️ 오직 성령으로</span>
+                </span>
+                <span className="bg-white/20 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[11px] border border-white/20">
+                  2026 복음 전파
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
+
       </div>
 
       {/* 📊 5 Key Stats Cards Grid */}
