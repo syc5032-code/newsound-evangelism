@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Sparkles, Lock, Eye, EyeOff } from 'lucide-react';
+import { X, Calendar, Sparkles, Lock, Eye, EyeOff, ChevronDown } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
 import { CORPS_PRESETS, LOCATION_PRESETS, CELL_COLORS, COLOR_KEYS, getCellColor } from '../data/presetData';
 import { getDayOfWeekKorean, calculateDurationMinutes, formatDurationString } from '../utils/dateUtils';
@@ -28,7 +28,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
   // Form states
   const [cellName, setCellName] = useState('');
-  const [corpsName, setCorpsName] = useState('김태홍 군단');
+  const [corpsName, setCorpsName] = useState(CORPS_PRESETS[0] || '강수오 군단');
   const [cellLeader, setCellLeader] = useState('');
   const [contact, setContact] = useState('');
   const [date, setDate] = useState(initialDate || format(new Date(), 'yyyy-MM-dd'));
@@ -47,7 +47,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
   useEffect(() => {
     if (editSchedule) {
       setCellName(editSchedule.cellName || '');
-      setCorpsName(editSchedule.corpsName || '김태홍 군단');
+      setCorpsName(editSchedule.corpsName || CORPS_PRESETS[0] || '강수오 군단');
       setCellLeader(editSchedule.cellLeader || '');
       setContact(editSchedule.contact || '');
       setDate(editSchedule.date || format(new Date(), 'yyyy-MM-dd'));
@@ -65,7 +65,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       setStartTime(duplicateSchedule.startTime || '14:00');
       setEndTime(duplicateSchedule.endTime || '16:00');
       setLocation(duplicateSchedule.location || '');
-      setCorpsName(duplicateSchedule.corpsName || '김태홍 군단');
+      setCorpsName(duplicateSchedule.corpsName || CORPS_PRESETS[0] || '강수오 군단');
       setThemeColor(duplicateSchedule.themeColor || 'blue');
       setCellName('');
       setCellLeader('');
@@ -79,7 +79,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       const defaultDate = initialDate || format(new Date(), 'yyyy-MM-dd');
       setDate(defaultDate);
       setCellName('');
-      setCorpsName('김태홍 군단');
+      setCorpsName(CORPS_PRESETS[0] || '강수오 군단');
       setCellLeader('');
       setContact('');
       setStartTime('14:00');
@@ -257,38 +257,58 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
             </div>
           )}
 
-          {/* 1. 소속 군단 (상위 조직 선택) */}
+          {/* 1. 소속 군단 (군단리더 드롭다운 선택) */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-700">
-              소속 군단 <span className="text-rose-500">*</span>
-            </label>
-
-            {/* Preset 군단 chips */}
-            <div className="flex flex-wrap gap-2 mb-1.5">
-              {CORPS_PRESETS.map((preset) => (
-                <button
-                  type="button"
-                  key={preset}
-                  onClick={() => setCorpsName(preset)}
-                  className={`px-3.5 py-1.5 text-xs rounded-xl border font-bold transition-all cursor-pointer ${
-                    corpsName === preset
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-                  }`}
-                >
-                  {preset}
-                </button>
-              ))}
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-700">
+                소속 군단 (군단리더) <span className="text-rose-500">*</span>
+              </label>
+              <span className="text-[11px] text-slate-500 font-medium">총 {CORPS_PRESETS.length}개 군단</span>
             </div>
 
-            <input
-              type="text"
-              value={corpsName}
-              onChange={(e) => setCorpsName(e.target.value)}
-              placeholder="소속 군단 선택 또는 직접 입력 (예: 김태홍 군단, 김은진 군단)"
-              className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-              required
-            />
+            {/* Dropdown Select Bar */}
+            <div className="relative">
+              <select
+                value={CORPS_PRESETS.includes(corpsName) ? corpsName : '__custom__'}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '__custom__') {
+                    if (CORPS_PRESETS.includes(corpsName)) {
+                      setCorpsName('');
+                    }
+                  } else {
+                    setCorpsName(val);
+                  }
+                }}
+                className="w-full pl-3.5 pr-10 py-2.5 text-sm font-semibold bg-slate-50 hover:bg-slate-100/80 focus:bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer text-slate-800"
+              >
+                <option value="" disabled>군단을 선택해주세요</option>
+                {CORPS_PRESETS.map((preset, idx) => (
+                  <option key={preset} value={preset}>
+                    {idx + 1}. {preset}
+                  </option>
+                ))}
+                <option value="__custom__">✏️ 직접 입력하기</option>
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            </div>
+
+            {/* If custom input or not in presets, show manual input field */}
+            {(!CORPS_PRESETS.includes(corpsName) || corpsName === '') && (
+              <div className="pt-1">
+                <input
+                  type="text"
+                  value={corpsName}
+                  onChange={(e) => setCorpsName(e.target.value)}
+                  placeholder="군단명을 직접 입력해주세요 (예: 강수오 군단)"
+                  className="w-full px-3.5 py-2 text-sm bg-white border border-blue-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-800"
+                  autoFocus
+                  required
+                />
+              </div>
+            )}
           </div>
 
           {/* 2. 신청셀 (하위 셀 수기 직접 입력) */}
