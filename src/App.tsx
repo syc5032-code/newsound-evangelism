@@ -119,11 +119,11 @@ export function App() {
       setSchedules((prev) =>
         prev.map((item) => (item.id === schedule.id ? schedule : item))
       );
-      addToast(`[${schedule.cellName}] 노방전도 일정이 수정되었습니다.`, 'success');
+      addToast(`[${schedule.cellName}] 일정이 수정되었습니다.`, 'success');
       setEditingSchedule(null);
     } else {
       setSchedules((prev) => [schedule, ...prev]);
-      addToast(`[${schedule.cellName}] 노방전도 신청이 성공적으로 등록되었습니다! 🎉`, 'success');
+      addToast(`[${schedule.cellName}] 노방전도 신청이 완료되었습니다!`, 'success');
       setDuplicateSchedule(null);
     }
   };
@@ -135,7 +135,7 @@ export function App() {
     if (selectedDetailSchedule?.id === id) {
       setSelectedDetailSchedule(null);
     }
-    addToast(`[${target?.cellName || '일정'}] 노방전도 일정이 삭제되었습니다.`, 'info');
+    addToast(`[${target?.cellName || '일정'}] 일정이 삭제되었습니다.`, 'info');
   };
 
   // Schedule Edit Handler
@@ -152,7 +152,7 @@ export function App() {
     setDuplicateSchedule(schedule);
     setSelectedDetailSchedule(null);
     setIsApplyModalOpen(true);
-    addToast(`[${schedule.cellName}]의 일시 및 장소가 복사되었습니다. 신청셀 정보를 입력해주세요! ✨`, 'info');
+    addToast(`[${schedule.cellName}]의 일시 및 장소가 복사되었습니다.`, 'info');
   };
 
   // Auth request handler from DetailModal
@@ -166,7 +166,7 @@ export function App() {
   const handleAuthSuccess = () => {
     if (authActionType === 'admin-login') {
       setIsAdmin(true);
-      addToast('관리자 모드로 전환되었습니다. 🛡️ (모든 일정 관리 가능)', 'success');
+      addToast('관리자 모드로 전환되었습니다.', 'success');
     } else if (authActionType === 'edit' && authTargetSchedule) {
       handleStartEditSchedule(authTargetSchedule);
     } else if (authActionType === 'delete' && authTargetSchedule) {
@@ -194,7 +194,7 @@ export function App() {
         document.execCommand('copy');
         document.body.removeChild(textarea);
       }
-      addToast('카카오톡/문자 공유 텍스트가 클립보드에 복사되었습니다! 📋', 'success');
+      addToast('공유 텍스트가 클립보드에 복사되었습니다.', 'success');
     } catch {
       addToast('클립보드 복사에 실패했습니다.', 'error');
     }
@@ -222,15 +222,8 @@ export function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-50/80 flex flex-col selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#f4f4f5] text-[#18181b] flex flex-col selection:bg-[#18181b] selection:text-[#ffffff]">
       
-      {/* Ambient background glow effects */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-blue-300/15 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -left-32 w-[450px] h-[450px] bg-indigo-300/15 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 right-1/4 w-[500px] h-[500px] bg-violet-300/15 rounded-full blur-3xl" />
-      </div>
-
       {/* Toast Notification */}
       <Toast toasts={toasts} onDismiss={removeToast} />
 
@@ -254,8 +247,8 @@ export function App() {
         onAdminLogout={handleAdminLogout}
       />
 
-      {/* Main Content Area */}
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Main Content Area (Max width 1200px) */}
+      <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
         
         {/* Statistics & Overview Banner */}
         <StatsBanner
@@ -323,19 +316,19 @@ export function App() {
             setApplyModalInitialDate(undefined);
             setIsApplyModalOpen(true);
           }}
-          className="flex items-center gap-1.5 px-4 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-full shadow-xl shadow-blue-500/40 font-bold text-xs active:scale-95 transition-all cursor-pointer border border-white/20"
+          className="flex items-center gap-1.5 px-4 py-3 bg-[#09090b] text-[#ffffff] rounded-[14px] font-medium text-xs border border-[#27272a] shadow-md active:scale-95 transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>전도 신청</span>
+          <span>노방전도 신청</span>
         </button>
       </div>
 
       {/* Footer */}
-      <footer className="relative z-10 mt-auto border-t border-slate-200/80 bg-white/80 backdrop-blur-md py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-medium">© 2026 뉴사운드교회 청년부 및 교구 노방전도 사역팀</p>
-          <p className="text-slate-400 italic">
-            "너희는 온 천하에 다니며 만민에게 복음을 전파하라 (막 16:15)"
+      <footer className="mt-auto border-t border-[#ececee] bg-[#ffffff] py-6 text-center text-xs text-[#71717a]">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="font-normal">© 2026 뉴사운드교회 청년부 노방전도 사역팀</p>
+          <p className="text-[#a1a1aa]">
+            "오직 성령이 너희에게 임하시면 너희가 권능을 받고... 내 증인이 되리라 (행 1:8)"
           </p>
         </div>
       </footer>
