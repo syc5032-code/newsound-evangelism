@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Users, MapPin, Phone, MessageSquare, Copy, ChevronRight, Calendar } from 'lucide-react';
+import { Clock, MapPin, Phone, Users, MessageSquare, Copy, ChevronRight } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
 import { CELL_COLORS } from '../data/presetData';
 import { formatDateFullKorean, formatDurationString, getDDayString } from '../utils/dateUtils';
@@ -15,26 +15,32 @@ export const ListView: React.FC<ListViewProps> = ({
   onSelectSchedule,
   onCopyShareText,
 }) => {
-  if (schedules.length === 0) {
+  // Sort schedules by date and startTime
+  const sortedSchedules = [...schedules].sort((a, b) => {
+    const dateComp = a.date.localeCompare(b.date);
+    if (dateComp !== 0) return dateComp;
+    return a.startTime.localeCompare(b.startTime);
+  });
+
+  if (sortedSchedules.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center shadow-xs">
-        <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-        <h3 className="text-base font-bold text-slate-800">조회된 전도 일정이 없습니다</h3>
-        <p className="text-xs text-slate-400 mt-1">
-          새로운 전도 일정을 신청하거나 검색 필터를 확인해보세요.
+      <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/80 shadow-xs">
+        <div className="w-14 h-14 mx-auto mb-3.5 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <Clock className="w-7 h-7" />
+        </div>
+        <h3 className="text-base font-bold text-slate-800 mb-1">
+          신청된 노방전도 일정이 없습니다
+        </h3>
+        <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          우측 상단의 '노방전도 신청하기' 버튼을 눌러 소속 셀의 새로운 전도 일정을 등록해보세요.
         </p>
       </div>
     );
   }
 
-  // Sort chronologically
-  const sorted = [...schedules].sort((a, b) =>
-    `${a.date} ${a.startTime}`.localeCompare(`${b.date} ${b.startTime}`)
-  );
-
   return (
     <div className="space-y-3.5">
-      {sorted.map((schedule) => {
+      {sortedSchedules.map((schedule) => {
         const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
         const dDayInfo = getDDayString(schedule.date);
         const durationStr = formatDurationString(schedule.durationMinutes);
@@ -43,14 +49,15 @@ export const ListView: React.FC<ListViewProps> = ({
           <div
             key={schedule.id}
             onClick={() => onSelectSchedule(schedule)}
-            className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+            className="group bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-slate-200/80 hover:border-blue-300 shadow-xs hover:shadow-md transition-all cursor-pointer"
           >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            {/* Top Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100">
               
-              {/* Corps & Date Header */}
-              <div className="flex items-center gap-3">
+              {/* Cell & Corps Header */}
+              <div className="flex items-center gap-2">
                 <span className={`px-3 py-1 rounded-xl text-xs font-bold ${colorTheme.badge}`}>
-                  {schedule.cellName} 군단
+                  {schedule.cellName} {schedule.corpsName ? `(${schedule.corpsName})` : ''}
                 </span>
                 <span className="text-sm sm:text-base font-bold text-slate-900">
                   {formatDateFullKorean(schedule.date)}
@@ -92,7 +99,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-500">
                   <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span>담당: {schedule.cellLeader} ({schedule.contact})</span>
+                  <span>신청자: {schedule.cellLeader} ({schedule.contact})</span>
                 </div>
               </div>
 

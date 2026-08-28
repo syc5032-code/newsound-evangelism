@@ -1,12 +1,14 @@
 import React from 'react';
 import { Search, RotateCcw } from 'lucide-react';
-import { CORPS_PRESETS, LOCATION_PRESETS } from '../data/presetData';
+import { CELL_PRESETS, CORPS_PRESETS, LOCATION_PRESETS } from '../data/presetData';
 
 interface FilterBarProps {
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   selectedCell: string;
   onSelectedCellChange: (cell: string) => void;
+  selectedCorps: string;
+  onSelectedCorpsChange: (corps: string) => void;
   selectedLocation: string;
   onSelectedLocationChange: (loc: string) => void;
   onResetFilters: () => void;
@@ -18,12 +20,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onSearchQueryChange,
   selectedCell,
   onSelectedCellChange,
+  selectedCorps,
+  onSelectedCorpsChange,
   selectedLocation,
   onSelectedLocationChange,
   onResetFilters,
   totalFilteredCount,
 }) => {
-  const isFiltered = searchQuery !== '' || selectedCell !== '' || selectedLocation !== '';
+  const isFiltered = searchQuery !== '' || selectedCell !== '' || selectedCorps !== '' || selectedLocation !== '';
 
   return (
     <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
@@ -35,7 +39,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchQueryChange(e.target.value)}
-          placeholder="소속군단, 담당자, 장소, 참여자, 기도제목 검색..."
+          placeholder="신청셀, 소속군단, 신청자, 장소, 셀원, 기도제목 검색..."
           className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
         />
         {searchQuery && (
@@ -51,16 +55,30 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       {/* Select Filters */}
       <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
         
-        {/* Corps Selector */}
+        {/* Cell Selector */}
         <select
           value={selectedCell}
           onChange={(e) => onSelectedCellChange(e.target.value)}
           className="flex-1 sm:flex-initial text-xs sm:text-sm py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
         >
-          <option value="">전체 군단 보기</option>
+          <option value="">전체 셀 보기</option>
+          {CELL_PRESETS.map((cell) => (
+            <option key={cell} value={cell}>
+              {cell}
+            </option>
+          ))}
+        </select>
+
+        {/* Corps Selector */}
+        <select
+          value={selectedCorps}
+          onChange={(e) => onSelectedCorpsChange(e.target.value)}
+          className="flex-1 sm:flex-initial text-xs sm:text-sm py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
+        >
+          <option value="">전체 군단</option>
           {CORPS_PRESETS.map((corps) => (
             <option key={corps} value={corps}>
-              {corps} 군단
+              {corps}
             </option>
           ))}
         </select>

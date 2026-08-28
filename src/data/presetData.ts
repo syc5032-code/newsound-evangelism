@@ -2,12 +2,18 @@ import type { EvangelismSchedule } from '../types';
 
 export const ADMIN_PASSWORDS = ['newsound77', '7777', '1234'];
 
-export const CORPS_PRESETS = [
-  '김태홍',
-  '김은진'
+export const CELL_PRESETS = [
+  '송예찬셀',
+  '권회인셀',
+  '윤수민셀',
+  '한은택셀',
+  '박창현셀'
 ];
 
-export const CELL_PRESETS = CORPS_PRESETS;
+export const CORPS_PRESETS = [
+  '김태홍 군단',
+  '김은진 군단'
+];
 
 export const LOCATION_PRESETS = [
   '마곡역',
@@ -76,8 +82,8 @@ export const CELL_COLORS: { [key: string]: { bg: string; text: string; border: s
 export const COLOR_KEYS = Object.keys(CELL_COLORS);
 
 export const getCellColor = (name: string, index = 0): string => {
-  if (name.includes('태홍') || name.includes('송예찬')) return 'blue';
-  if (name.includes('은진') || name.includes('권회인')) return 'emerald';
+  if (name.includes('송예찬')) return 'blue';
+  if (name.includes('권회인')) return 'emerald';
   if (name.includes('윤수민')) return 'violet';
   if (name.includes('한은택')) return 'amber';
   if (name.includes('박창현')) return 'rose';
@@ -94,8 +100,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 1. 송예찬셀 (김태홍 군단)
   {
     id: 'sample-1',
-    cellName: '김태홍',
-    cellLeader: '송예찬 (송예찬셀)',
+    cellName: '송예찬셀',
+    corpsName: '김태홍 군단',
+    cellLeader: '송예찬',
     contact: '010-3456-7890',
     date: '2026-08-28',
     dayOfWeek: '금요일',
@@ -113,8 +120,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 2. 권회인셀 (김은진 군단)
   {
     id: 'sample-2',
-    cellName: '김은진',
-    cellLeader: '권회인 (권회인셀)',
+    cellName: '권회인셀',
+    corpsName: '김은진 군단',
+    cellLeader: '권회인',
     contact: '010-8765-4321',
     date: '2026-08-29',
     dayOfWeek: '토요일',
@@ -132,8 +140,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 3. 윤수민셀 (김태홍 군단)
   {
     id: 'sample-3',
-    cellName: '김태홍',
-    cellLeader: '윤수민 (윤수민셀)',
+    cellName: '윤수민셀',
+    corpsName: '김태홍 군단',
+    cellLeader: '윤수민',
     contact: '010-2345-6789',
     date: '2026-08-30',
     dayOfWeek: '일요일',
@@ -151,8 +160,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 4. 한은택셀 (김은진 군단)
   {
     id: 'sample-4',
-    cellName: '김은진',
-    cellLeader: '한은택 (한은택셀)',
+    cellName: '한은택셀',
+    corpsName: '김은진 군단',
+    cellLeader: '한은택',
     contact: '010-4567-8901',
     date: '2026-09-02',
     dayOfWeek: '수요일',
@@ -170,8 +180,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 5. 박창현셀 (김태홍 군단)
   {
     id: 'sample-5',
-    cellName: '김태홍',
-    cellLeader: '박창현 (박창현셀)',
+    cellName: '박창현셀',
+    corpsName: '김태홍 군단',
+    cellLeader: '박창현',
     contact: '010-5678-1234',
     date: '2026-09-05',
     dayOfWeek: '토요일',
@@ -189,8 +200,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 6. 송예찬셀 (김태홍 군단)
   {
     id: 'sample-6',
-    cellName: '김태홍',
-    cellLeader: '송예찬 (송예찬셀)',
+    cellName: '송예찬셀',
+    corpsName: '김태홍 군단',
+    cellLeader: '송예찬',
     contact: '010-3456-7890',
     date: '2026-09-05',
     dayOfWeek: '토요일',
@@ -208,8 +220,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 7. 권회인셀 (김은진 군단)
   {
     id: 'sample-7',
-    cellName: '김은진',
-    cellLeader: '권회인 (권회인셀)',
+    cellName: '권회인셀',
+    corpsName: '김은진 군단',
+    cellLeader: '권회인',
     contact: '010-8765-4321',
     date: '2026-09-06',
     dayOfWeek: '일요일',
@@ -227,8 +240,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 8. 윤수민셀 (김태홍 군단)
   {
     id: 'sample-8',
-    cellName: '김태홍',
-    cellLeader: '윤수민 (윤수민셀)',
+    cellName: '윤수민셀',
+    corpsName: '김태홍 군단',
+    cellLeader: '윤수민',
     contact: '010-2345-6789',
     date: '2026-09-12',
     dayOfWeek: '토요일',
@@ -246,8 +260,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 9. 한은택셀 (김은진 군단)
   {
     id: 'sample-9',
-    cellName: '김은진',
-    cellLeader: '한은택 (한은택셀)',
+    cellName: '한은택셀',
+    corpsName: '김은진 군단',
+    cellLeader: '한은택',
     contact: '010-4567-8901',
     date: '2026-09-19',
     dayOfWeek: '토요일',
@@ -265,8 +280,9 @@ export const INITIAL_SAMPLE_SCHEDULES: EvangelismSchedule[] = [
   // 10. 박창현셀 (김태홍 군단)
   {
     id: 'sample-10',
-    cellName: '김태홍',
-    cellLeader: '박창현 (박창현셀)',
+    cellName: '박창현셀',
+    corpsName: '김태홍 군단',
+    cellLeader: '박창현',
     contact: '010-5678-1234',
     date: '2026-09-26',
     dayOfWeek: '토요일',

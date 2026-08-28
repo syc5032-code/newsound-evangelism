@@ -1,7 +1,8 @@
 export interface EvangelismSchedule {
   id: string;
-  cellName: string; // 소속군단 명칭 (예: 김태홍, 김은진)
-  cellLeader: string; // 신청자/리더 이름
+  cellName: string; // 신청셀 명칭 (예: 송예찬셀, 권회인셀, 윤수민셀)
+  corpsName: string; // 소속 군단 명칭 (예: 김태홍 군단, 김은진 군단)
+  cellLeader: string; // 신청자 / 리더 이름 (예: 송예찬)
   contact: string;
   date: string; // YYYY-MM-DD
   dayOfWeek?: string; // e.g. "토요일"
@@ -11,7 +12,6 @@ export interface EvangelismSchedule {
   location: string; // 전도 장소 (예: 마곡역, 롯데리아 앞)
   participantCount: number;
   participants: string[];
-  supplies?: string[];
   prayerTopics: string;
   password?: string; // 수정/삭제용 4자리 비밀번호
   themeColor: string; // Tailwind color theme identifier
@@ -35,6 +35,7 @@ export interface CalendarDay {
 export interface FilterOptions {
   searchQuery: string;
   selectedCell: string;
+  selectedCorps: string;
   selectedLocation: string;
   selectedMonth: string; // YYYY-MM
 }

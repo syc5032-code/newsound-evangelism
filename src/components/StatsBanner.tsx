@@ -76,7 +76,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
           <span className="text-2xl font-black text-slate-900 tracking-tight">{totalEvents}</span>
           <span className="text-xs font-medium text-slate-500">회</span>
         </div>
-        <p className="text-[11px] text-slate-400 mt-1">이번 달 확정된 군단 전도</p>
+        <p className="text-[11px] text-slate-400 mt-1">이번 달 확정된 셀 전도</p>
       </div>
 
       {/* 2. Total Participants */}
@@ -91,7 +91,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
           <span className="text-2xl font-black text-slate-900 tracking-tight">{totalParticipants}</span>
           <span className="text-xs font-medium text-slate-500">명</span>
         </div>
-        <p className="text-[11px] text-slate-400 mt-1">군단원들의 열정적인 동참</p>
+        <p className="text-[11px] text-slate-400 mt-1">셀원들의 열정적인 동참</p>
       </div>
 
       {/* 3. Total Evangelism Hours */}
@@ -147,12 +147,14 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
           {nextUpcoming ? (
             <div className="mt-1.5">
               <p className="text-base font-bold text-white tracking-tight flex items-center gap-1.5">
-                <span>{nextUpcoming.cellName} 군단</span>
-                <span className="text-xs font-normal text-indigo-100">({nextUpcoming.participantCount}명)</span>
+                <span>{nextUpcoming.cellName}</span>
+                {nextUpcoming.corpsName && (
+                  <span className="text-xs font-normal text-indigo-200">({nextUpcoming.corpsName})</span>
+                )}
               </p>
               <p className="text-xs text-indigo-100 flex items-center gap-1 mt-0.5 truncate">
                 <MapPin className="w-3 h-3 shrink-0" />
-                <span className="truncate">{nextUpcoming.location}</span>
+                <span className="truncate">{nextUpcoming.location} ({nextUpcoming.participantCount}명)</span>
               </p>
               <p className="text-[11px] text-indigo-200 mt-0.5">
                 {nextUpcoming.date} {nextUpcoming.startTime}

@@ -25,6 +25,7 @@ export function App() {
   // 2. Filter & Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCell, setSelectedCell] = useState('');
+  const [selectedCorps, setSelectedCorps] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
 
   // 3. Admin & Auth State
@@ -67,25 +68,28 @@ export function App() {
   // Filtered schedules
   const filteredSchedules = useMemo(() => {
     return schedules.filter((item) => {
-      // Corps filter
+      // Cell filter
       if (selectedCell && item.cellName !== selectedCell) return false;
+      // Corps filter
+      if (selectedCorps && item.corpsName !== selectedCorps) return false;
       // Location filter
       if (selectedLocation && item.location !== selectedLocation) return false;
       // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchCell = item.cellName?.toLowerCase().includes(q);
+        const matchCorps = item.corpsName?.toLowerCase().includes(q);
         const matchLeader = item.cellLeader?.toLowerCase().includes(q);
         const matchLocation = item.location?.toLowerCase().includes(q);
         const matchPrayer = item.prayerTopics?.toLowerCase().includes(q);
         const matchParticipants = item.participants?.some((p) => p.toLowerCase().includes(q));
-        if (!matchCell && !matchLeader && !matchLocation && !matchPrayer && !matchParticipants) {
+        if (!matchCell && !matchCorps && !matchLeader && !matchLocation && !matchPrayer && !matchParticipants) {
           return false;
         }
       }
       return true;
     });
-  }, [schedules, selectedCell, selectedLocation, searchQuery]);
+  }, [schedules, selectedCell, selectedCorps, selectedLocation, searchQuery]);
 
   // Calendar days grid
   const calendarDays = useMemo(() => {
@@ -102,11 +106,11 @@ export function App() {
       setSchedules((prev) =>
         prev.map((item) => (item.id === schedule.id ? schedule : item))
       );
-      addToast(`[${schedule.cellLeader}] 노방전도 일정이 수정되었습니다.`, 'success');
+      addToast(`[${schedule.cellName}] 노방전도 일정이 수정되었습니다.`, 'success');
       setEditingSchedule(null);
     } else {
       setSchedules((prev) => [schedule, ...prev]);
-      addToast(`[${schedule.cellLeader}] 노방전도 신청이 성공적으로 등록되었습니다! 🎉`, 'success');
+      addToast(`[${schedule.cellName}] 노방전도 신청이 성공적으로 등록되었습니다! 🎉`, 'success');
     }
   };
 
@@ -117,7 +121,7 @@ export function App() {
     if (selectedDetailSchedule?.id === id) {
       setSelectedDetailSchedule(null);
     }
-    addToast(`[${target?.cellLeader || '일정'}] 노방전도 일정이 삭제되었습니다.`, 'info');
+    addToast(`[${target?.cellName || '일정'}] 노방전도 일정이 삭제되었습니다.`, 'info');
   };
 
   // Schedule Edit Handler
@@ -188,6 +192,7 @@ export function App() {
   const handleResetFilters = () => {
     setSearchQuery('');
     setSelectedCell('');
+    setSelectedCorps('');
     setSelectedLocation('');
   };
 
@@ -232,6 +237,8 @@ export function App() {
           onSearchQueryChange={setSearchQuery}
           selectedCell={selectedCell}
           onSelectedCellChange={setSelectedCell}
+          selectedCorps={selectedCorps}
+          onSelectedCorpsChange={setSelectedCorps}
           selectedLocation={selectedLocation}
           onSelectedLocationChange={setSelectedLocation}
           onResetFilters={handleResetFilters}

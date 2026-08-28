@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Sparkles, Lock } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
-import { CORPS_PRESETS, LOCATION_PRESETS, CELL_COLORS, COLOR_KEYS, getCellColor } from '../data/presetData';
+import { CELL_PRESETS, CORPS_PRESETS, LOCATION_PRESETS, CELL_COLORS, COLOR_KEYS, getCellColor } from '../data/presetData';
 import { getDayOfWeekKorean, calculateDurationMinutes, formatDurationString } from '../utils/dateUtils';
 import confetti from 'canvas-confetti';
 import { format } from 'date-fns';
@@ -24,7 +24,8 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
   const isEditing = !!editSchedule;
 
   // Form states
-  const [corpsName, setCorpsName] = useState('');
+  const [cellName, setCellName] = useState('');
+  const [corpsName, setCorpsName] = useState('김태홍 군단');
   const [cellLeader, setCellLeader] = useState('');
   const [contact, setContact] = useState('');
   const [date, setDate] = useState(initialDate || format(new Date(), 'yyyy-MM-dd'));
@@ -41,7 +42,8 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
   useEffect(() => {
     if (editSchedule) {
-      setCorpsName(editSchedule.cellName || '');
+      setCellName(editSchedule.cellName || '');
+      setCorpsName(editSchedule.corpsName || '김태홍 군단');
       setCellLeader(editSchedule.cellLeader || '');
       setContact(editSchedule.contact || '');
       setDate(editSchedule.date || format(new Date(), 'yyyy-MM-dd'));
@@ -57,7 +59,8 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       // New application
       const defaultDate = initialDate || format(new Date(), 'yyyy-MM-dd');
       setDate(defaultDate);
-      setCorpsName('');
+      setCellName('');
+      setCorpsName('김태홍 군단');
       setCellLeader('');
       setContact('');
       setStartTime('14:00');
@@ -115,12 +118,14 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
     setParticipants(participants.filter((p) => p !== name));
   };
 
-  // Quick corps selector
-  const handleSelectCorps = (preset: string) => {
-    setCorpsName(preset);
+  // Quick cell selector
+  const handleSelectCell = (preset: string) => {
+    setCellName(preset);
     setThemeColor(getCellColor(preset));
     if (!cellLeader) {
-      setCellLeader(preset);
+      // Auto suggest leader name by stripping '셀'
+      const cleanName = preset.replace(/셀$/, '');
+      setCellLeader(cleanName);
     }
   };
 
@@ -128,16 +133,20 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!cellName.trim()) {
+      setErrorMsg('신청셀 명칭을 입력하거나 선택해주세요. (예: 송예찬셀)');
+      return;
+    }
     if (!corpsName.trim()) {
-      setErrorMsg('소속군단을 입력하거나 선택해주세요.');
+      setErrorMsg('소속 군단을 선택하거나 입력해주세요. (예: 김태홍 군단)');
       return;
     }
     if (!cellLeader.trim()) {
-      setErrorMsg('신청자(군단 리더/담당자) 이름을 입력해주세요.');
+      setErrorMsg('신청자(리더) 이름을 입력해주세요.');
       return;
     }
     if (!contact.trim()) {
-      setErrorMsg('담당자 연락처를 입력해주세요.');
+      setErrorMsg('신청자 연락처를 입력해주세요.');
       return;
     }
     if (!date) {
@@ -155,7 +164,8 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
     const newSchedule: EvangelismSchedule = {
       id: editSchedule?.id || `schedule-${Date.now()}`,
-      cellName: corpsName.trim(),
+      cellName: cellName.trim(),
+      corpsName: corpsName.trim(),
       cellLeader: cellLeader.trim(),
       contact: contact.trim(),
       date,
@@ -168,7 +178,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       participants,
       prayerTopics: prayerTopics.trim(),
       password: password.trim() || '1234',
-      themeColor: themeColor || getCellColor(corpsName),
+      themeColor: themeColor || getCellColor(cellName),
       createdAt: editSchedule?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -201,7 +211,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 {isEditing ? '노방전도 일정 수정' : '새 노방전도 신청하기'}
               </h2>
               <p className="text-xs text-slate-500">
-                {isEditing ? '신청된 세부 정보를 수정합니다.' : '소속군단의 노방전도 출격 일정을 등록해주세요.'}
+                {isEditing ? '신청된 세부 정보를 수정합니다.' : '각 셀의 노방전도 출격 일정을 등록해주세요.'}
               </p>
             </div>
           </div>
@@ -224,41 +234,80 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
             </div>
           )}
 
-          {/* 1. 소속군단 */}
-          <div className="space-y-2.5">
-            <label className="block text-xs font-bold text-slate-700">
-              소속군단 <span className="text-rose-500">*</span>
-            </label>
+          {/* 1. 신청셀 & 소속 군단 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             
-            {/* Quick preset pills: 김태홍, 김은진 */}
-            <div className="flex flex-wrap gap-2 mb-2">
-              {CORPS_PRESETS.map((preset) => (
-                <button
-                  type="button"
-                  key={preset}
-                  onClick={() => handleSelectCorps(preset)}
-                  className={`px-3.5 py-1.5 text-xs rounded-xl border font-bold transition-all cursor-pointer ${
-                    corpsName === preset
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-                  }`}
-                >
-                  {preset}
-                </button>
-              ))}
+            {/* 신청셀 */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-700">
+                신청셀 <span className="text-rose-500">*</span>
+              </label>
+              
+              {/* Preset 셀 chips */}
+              <div className="flex flex-wrap gap-1.5 mb-1.5">
+                {CELL_PRESETS.map((preset) => (
+                  <button
+                    type="button"
+                    key={preset}
+                    onClick={() => handleSelectCell(preset)}
+                    className={`px-2.5 py-1 text-xs rounded-lg border font-bold transition-all cursor-pointer ${
+                      cellName === preset
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
+
+              <input
+                type="text"
+                value={cellName}
+                onChange={(e) => {
+                  setCellName(e.target.value);
+                  setThemeColor(getCellColor(e.target.value));
+                }}
+                placeholder="예: 송예찬셀"
+                className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                required
+              />
             </div>
 
-            <input
-              type="text"
-              value={corpsName}
-              onChange={(e) => {
-                setCorpsName(e.target.value);
-                setThemeColor(getCellColor(e.target.value));
-              }}
-              placeholder="소속군단 선택 또는 직접 입력 (예: 김태홍, 김은진)"
-              className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-              required
-            />
+            {/* 소속 군단 */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-700">
+                소속 군단 <span className="text-rose-500">*</span>
+              </label>
+
+              {/* Preset 군단 chips */}
+              <div className="flex flex-wrap gap-1.5 mb-1.5">
+                {CORPS_PRESETS.map((preset) => (
+                  <button
+                    type="button"
+                    key={preset}
+                    onClick={() => setCorpsName(preset)}
+                    className={`px-2.5 py-1 text-xs rounded-lg border font-bold transition-all cursor-pointer ${
+                      corpsName === preset
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
+
+              <input
+                type="text"
+                value={corpsName}
+                onChange={(e) => setCorpsName(e.target.value)}
+                placeholder="예: 김태홍 군단, 김은진 군단"
+                className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                required
+              />
+            </div>
+
           </div>
 
           {/* 2. 신청자 및 연락처 */}
@@ -271,14 +320,14 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 type="text"
                 value={cellLeader}
                 onChange={(e) => setCellLeader(e.target.value)}
-                placeholder="예: 송예찬 (송예찬셀)"
+                placeholder="예: 송예찬"
                 className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 required
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                담당자 연락처 <span className="text-rose-500">*</span>
+                신청자 연락처 <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"

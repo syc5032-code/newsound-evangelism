@@ -2,7 +2,7 @@ import type { EvangelismSchedule } from '../types';
 import { INITIAL_SAMPLE_SCHEDULES } from '../data/presetData';
 import { formatDateFullKorean, formatDurationString } from './dateUtils';
 
-const STORAGE_KEY = 'CHURCH_EVANGELISM_CORPS_V4';
+const STORAGE_KEY = 'CHURCH_EVANGELISM_CORPS_V5';
 
 export const loadSchedules = (): EvangelismSchedule[] => {
   try {
@@ -52,8 +52,11 @@ export const generateKakaoShareText = (schedule: EvangelismSchedule): string => 
     ? `\n🙏 중보 기도제목: ${schedule.prayerTopics}`
     : '';
 
+  const corpsInfo = schedule.corpsName ? ` (${schedule.corpsName})` : '';
+
   return `[⛪ 노방전도 일정 안내]
-✨ 소속군단: ${schedule.cellName} (담당: ${schedule.cellLeader} / ${schedule.contact})
+✨ 신청셀: ${schedule.cellName}${corpsInfo}
+👤 신청자: ${schedule.cellLeader} (${schedule.contact})
 📅 일시: ${formatDateFullKorean(schedule.date)}
 ⏰ 시간: ${schedule.startTime} ~ ${schedule.endTime} (${durationStr})
 📍 전도 장소: ${schedule.location}${participantsList}${prayerText}
@@ -63,10 +66,11 @@ export const generateKakaoShareText = (schedule: EvangelismSchedule): string => 
 };
 
 export const exportToCSV = (schedules: EvangelismSchedule[]): void => {
-  const headers = ['소속군단', '담당리더', '연락처', '전도날짜', '요일', '시작시간', '종료시간', '소요시간(분)', '전도장소', '참여인원수', '참여자명단', '기도제목'];
+  const headers = ['신청셀', '소속군단', '신청자', '연락처', '전도날짜', '요일', '시작시간', '종료시간', '소요시간(분)', '전도장소', '참여인원수', '참여자명단', '기도제목'];
   
   const rows = schedules.map(s => [
     `"${s.cellName.replace(/"/g, '""')}"`,
+    `"${(s.corpsName || '').replace(/"/g, '""')}"`,
     `"${s.cellLeader.replace(/"/g, '""')}"`,
     `"${s.contact.replace(/"/g, '""')}"`,
     `"${s.date}"`,
@@ -85,7 +89,7 @@ export const exportToCSV = (schedules: EvangelismSchedule[]): void => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.setAttribute('href', url);
-  link.setAttribute('download', `교회_군단_노방전도_신청현황_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute('download', `뉴사운드교회_셀_노방전도_신청현황_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

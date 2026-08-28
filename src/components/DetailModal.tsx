@@ -58,9 +58,9 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         {/* Header Banner */}
         <div className={`p-5 sm:p-6 border-b ${colorTheme.border} ${colorTheme.bg} flex items-start justify-between`}>
           <div>
-            <div className="flex items-center gap-2 mb-1.5">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
               <span className={`px-3 py-1 rounded-xl text-xs font-bold ${colorTheme.badge}`}>
-                {schedule.cellName} 군단
+                {schedule.cellName} {schedule.corpsName ? `(${schedule.corpsName})` : ''}
               </span>
               {dDayInfo.label && (
                 <span
@@ -134,19 +134,24 @@ export const DetailModal: React.FC<DetailModalProps> = ({
 
           </div>
 
-          {/* Leader & Contact Info */}
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-center justify-between">
-            <div className="space-y-0.5">
-              <span className="text-[11px] font-semibold text-slate-400">신청자 / 담당 리더</span>
-              <p className="text-sm font-bold text-slate-800">
-                {schedule.cellLeader}
+          {/* 신청셀 (소속 군단) & 신청자 연락처 Info */}
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-center justify-between gap-3">
+            <div className="space-y-1">
+              <span className="text-[11px] font-semibold text-slate-400">신청셀 / 소속 군단</span>
+              <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                <span>{schedule.cellName}</span>
+                {schedule.corpsName && (
+                  <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                    {schedule.corpsName}
+                  </span>
+                )}
               </p>
-              <p className="text-xs text-slate-500 font-mono">
-                {schedule.contact}
+              <p className="text-xs text-slate-500">
+                신청자: <strong className="text-slate-700">{schedule.cellLeader}</strong> <span className="font-mono text-slate-400">({schedule.contact})</span>
               </p>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <a
                 href={`tel:${schedule.contact}`}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/60 text-xs font-semibold transition-colors"
