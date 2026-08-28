@@ -28,26 +28,51 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
   const todayStr = format(new Date(), 'yyyy-MM-dd');
   const [selectedDateStr, setSelectedDateStr] = useState<string>(todayStr);
 
-  // 🎚️ Week Interval / Height Slider (사진과 같은 주간격 조절 슬라이더)
-  const totalWeeks = Math.ceil(calendarDays.length / 7) || 6;
+  // 🎚️ Chunk calendarDays into 7-day weeks
+  const allWeeks: CalendarDay[][] = React.useMemo(() => {
+    const weeks: CalendarDay[][] = [];
+    for (let i = 0; i < calendarDays.length; i += 7) {
+      weeks.push(calendarDays.slice(i, i + 7));
+    }
+    return weeks;
+  }, [calendarDays]);
+
+  const totalWeeks = allWeeks.length || 6;
   const [visibleWeeks, setVisibleWeeks] = useState<number>(totalWeeks);
+
+  // Determine which weeks to display based on slider and selectedDate
+  const displayedDays = React.useMemo(() => {
+    if (visibleWeeks >= totalWeeks) {
+      return calendarDays;
+    }
+    const selectedWeekIdx = Math.max(
+      0,
+      allWeeks.findIndex((w) => w.some((d) => d.dateString === selectedDateStr))
+    );
+    let startIdx = selectedWeekIdx;
+    if (startIdx + visibleWeeks > totalWeeks) {
+      startIdx = Math.max(0, totalWeeks - visibleWeeks);
+    }
+    const slicedWeeks = allWeeks.slice(startIdx, startIdx + visibleWeeks);
+    return slicedWeeks.flat();
+  }, [allWeeks, visibleWeeks, totalWeeks, selectedDateStr, calendarDays]);
 
   // Dynamic cell minimum height based on visible weeks slider
   const getCellMinHeight = () => {
     switch (visibleWeeks) {
       case 1:
-        return 'min-h-[300px] sm:min-h-[380px]';
+        return 'min-h-[250px] sm:min-h-[320px]';
       case 2:
-        return 'min-h-[220px] sm:min-h-[280px]';
+        return 'min-h-[165px] sm:min-h-[210px]';
       case 3:
-        return 'min-h-[170px] sm:min-h-[220px]';
+        return 'min-h-[125px] sm:min-h-[165px]';
       case 4:
-        return 'min-h-[130px] sm:min-h-[180px]';
+        return 'min-h-[100px] sm:min-h-[140px]';
       case 5:
-        return 'min-h-[105px] sm:min-h-[155px]';
+        return 'min-h-[85px] sm:min-h-[125px]';
       case 6:
       default:
-        return 'min-h-[88px] sm:min-h-[140px]';
+        return 'min-h-[78px] sm:min-h-[115px]';
     }
   };
 
@@ -119,6 +144,11 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
               <h2 className="text-base sm:text-2xl font-bold text-[#09090b] tracking-tight">
                 {format(currentDate, 'yyyy년 M월')}
               </h2>
+              {visibleWeeks < totalWeeks && (
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-[10000px] bg-[#09090b] text-[#ffffff]">
+                  {visibleWeeks}주 보기
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -184,9 +214,9 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
 
         </div>
 
-        {/* Calendar Days Grid */}
-        <div className="grid grid-cols-7 auto-rows-fr bg-[#ececee] gap-px">
-          {calendarDays.map((day) => {
+        {/* Calendar Days Grid (1주 ~ 6주 동적 렌더링) */}
+        <div className="grid grid-cols-7 auto-rows-fr bg-[#ececee] gap-px transition-all">
+          {displayedDays.map((day) => {
             const isSun = day.isSunday;
             const isSat = day.isSaturday;
             const isSelected = day.dateString === selectedDateStr;
@@ -250,7 +280,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 </div>
 
                 {/* --- Multiple Event Badges (하루에 여러 개 일정이 줄줄이 잘 보이도록 렌더링) --- */}
-                <div className="flex-1 flex flex-col gap-0.5 sm:gap-1 mt-0.5 overflow-y-auto max-h-[140px] pr-0.5">
+                <div className="flex-1 flex flex-col gap-0.5 sm:gap-1 mt-0.5 overflow-y-auto max-h-[160px] pr-0.5">
                   {day.events.map((schedule) => {
                     const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
                     return (
@@ -260,13 +290,21 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                           e.stopPropagation();
                           onSelectSchedule(schedule);
                         }}
-                        className={`px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-[5px] sm:rounded-[7px] border text-[9px] sm:text-[11px] font-bold leading-tight truncate flex items-center justify-between gap-0.5 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
+                        className={`px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-[5px] sm:rounded-[7px] border text-[9px] sm:text-[11px] font-bold leading-tight truncate flex flex-col justify-center cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
                         title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
                       >
-                        <span className="truncate">{schedule.cellName}</span>
-                        <span className="text-[8px] sm:text-[9px] font-mono opacity-85 shrink-0 hidden xs:inline sm:inline">
-                          {schedule.startTime}
-                        </span>
+                        <div className="flex items-center justify-between gap-0.5 truncate">
+                          <span className="truncate">{schedule.cellName}</span>
+                          <span className="text-[8px] sm:text-[9px] font-mono opacity-85 shrink-0">
+                            {schedule.startTime}
+                          </span>
+                        </div>
+                        {visibleWeeks <= 3 && (
+                          <div className="text-[8px] sm:text-[9px] opacity-90 truncate mt-0.5 flex items-center justify-between">
+                            <span className="truncate max-w-[65px] sm:max-w-[85px]">{schedule.location}</span>
+                            <span className="shrink-0 font-semibold">{schedule.participantCount}명</span>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -277,7 +315,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
           })}
         </div>
 
-        {/* 🎚️ Bottom Week View Interval Slider (사진 UI 반영: 6주 ~ 1주 슬라이더 바) */}
+        {/* 🎚️ Bottom Week View Interval Slider (1주 ~ 6주치 슬라이더 바) */}
         <div className="px-4 py-3 sm:px-6 sm:py-3.5 bg-[#ffffff] border-t border-[#ececee] flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-xs sm:text-sm font-bold text-[#09090b] w-8 sm:w-10">
@@ -301,24 +339,24 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
             <button
               type="button"
               onClick={() => setVisibleWeeks(totalWeeks)}
-              className={`px-2 py-1 text-[11px] font-medium rounded-[8px] border transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 text-[11px] font-semibold rounded-[8px] border transition-colors cursor-pointer ${
                 visibleWeeks === totalWeeks
                   ? 'bg-[#09090b] text-[#ffffff] border-[#09090b]'
                   : 'bg-[#f4f4f5] text-[#71717a] border-[#ececee] hover:text-[#09090b]'
               }`}
             >
-              전체
+              전체({totalWeeks}주)
             </button>
             <button
               type="button"
-              onClick={() => setVisibleWeeks(visibleWeeks <= 3 ? totalWeeks : 3)}
-              className={`px-2 py-1 text-[11px] font-medium rounded-[8px] border transition-colors cursor-pointer ${
-                visibleWeeks < totalWeeks
+              onClick={() => setVisibleWeeks(visibleWeeks === 1 ? totalWeeks : 1)}
+              className={`px-2.5 py-1 text-[11px] font-semibold rounded-[8px] border transition-colors cursor-pointer ${
+                visibleWeeks === 1
                   ? 'bg-[#09090b] text-[#ffffff] border-[#09090b]'
                   : 'bg-[#f4f4f5] text-[#71717a] border-[#ececee] hover:text-[#09090b]'
               }`}
             >
-              {visibleWeeks <= 3 ? '기본' : '확대'}
+              1주치
             </button>
           </div>
         </div>
