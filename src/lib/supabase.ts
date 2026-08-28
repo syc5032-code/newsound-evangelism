@@ -1,8 +1,12 @@
-﻿import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { EvangelismSchedule } from '../types';
 
 const SUPABASE_URL_KEY = 'NEWSOUND_SUPABASE_URL';
 const SUPABASE_ANON_KEY = 'NEWSOUND_SUPABASE_ANON_KEY';
+
+// Default Supabase project credentials for Newsound Church
+const DEFAULT_SUPABASE_URL = 'https://ultipttkxnnoppftliuv.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_d83pTQbpAjItPvP1ANw3tQ_SCWemYiL';
 
 export const getSupabaseConfig = () => {
   const envUrl = (import.meta as any).env?.VITE_SUPABASE_URL as string | undefined;
@@ -11,12 +15,21 @@ export const getSupabaseConfig = () => {
   const storedUrl = localStorage.getItem(SUPABASE_URL_KEY) || '';
   const storedKey = localStorage.getItem(SUPABASE_ANON_KEY) || '';
 
-  const url = envUrl || storedUrl;
-  const anonKey = envKey || storedKey;
+  let rawUrl = envUrl || storedUrl || DEFAULT_SUPABASE_URL;
+  const anonKey = envKey || storedKey || DEFAULT_SUPABASE_ANON_KEY;
+
+  // Clean trailing rest/v1 or slashes
+  let url = rawUrl.trim();
+  if (url.includes('/rest/v1')) {
+    url = url.split('/rest/v1')[0];
+  }
+  if (url.endsWith('/')) {
+    url = url.slice(0, -1);
+  }
 
   return {
     url,
-    anonKey,
+    anonKey: anonKey.trim(),
     isConfigured: Boolean(url && anonKey && url.startsWith('https://'))
   };
 };
