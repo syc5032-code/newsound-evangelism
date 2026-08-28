@@ -87,73 +87,78 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         className="bg-[#ffffff] rounded-[28px] sm:rounded-[36px] border border-[#ececee] overflow-hidden select-none transition-all shadow-xs"
       >
         
-        {/* Month Calendar Navigation Header */}
-        <div className="p-4 sm:p-6 border-b border-[#ececee] flex flex-wrap items-center justify-between gap-3 bg-[#ffffff]">
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg sm:text-2xl font-semibold text-[#09090b] tracking-tight">
-              {format(currentDate, 'yyyy년 M월')}
-            </h2>
-            <button
-              type="button"
-              onClick={() => {
-                onToday();
-                setSelectedDateStr(todayStr);
-              }}
-              className="px-2.5 py-1 text-xs font-medium text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer"
-            >
-              오늘
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="sm:hidden text-[10px] text-[#71717a] font-medium flex items-center gap-1 bg-[#f4f4f5] px-2.5 py-1 rounded-[10000px] border border-[#ececee]">
-              👈 좌우 넘겨 월 이동 👉
-            </span>
-
-            {/* Month Navigation Arrows */}
-            <div className="flex items-center gap-1 bg-[#f4f4f5] p-1 rounded-[14px] border border-[#ececee]">
+        {/* 📌 Sticky Month Header + Weekday Bar (달력 보는 동안 상단 고정) */}
+        <div className="sticky top-[70px] sm:top-[68px] z-20 bg-[#ffffff]/98 backdrop-blur-md border-b border-[#ececee] transition-all">
+          
+          {/* Month Calendar Navigation Header */}
+          <div className="p-3.5 sm:p-5 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <h2 className="text-base sm:text-2xl font-bold text-[#09090b] tracking-tight">
+                {format(currentDate, 'yyyy년 M월')}
+              </h2>
               <button
                 type="button"
-                onClick={onPrevMonth}
-                className="px-2.5 sm:px-3 py-1.5 rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
-                title="이전 달"
+                onClick={() => {
+                  onToday();
+                  setSelectedDateStr(todayStr);
+                }}
+                className="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[11px] sm:text-xs font-semibold text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer"
               >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">이전 달</span>
-              </button>
-              <button
-                type="button"
-                onClick={onNextMonth}
-                className="px-2.5 sm:px-3 py-1.5 rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
-                title="다음 달"
-              >
-                <span className="hidden sm:inline">다음 달</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                오늘
               </button>
             </div>
-          </div>
-        </div>
 
-        {/* Weekday Header (일 ~ 토) */}
-        <div className="grid grid-cols-7 border-b border-[#ececee] bg-[#ffffff] text-center py-2 text-xs font-semibold">
-          {KOREAN_DAYS.map((day, idx) => {
-            const isSun = idx === 0;
-            const isSat = idx === 6;
-            return (
-              <div
-                key={day}
-                className={`${
-                  isSun
-                    ? 'text-rose-600 font-bold'
-                    : isSat
-                    ? 'text-blue-600 font-bold'
-                    : 'text-[#71717a]'
-                }`}
-              >
-                {day}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="sm:hidden text-[10px] text-[#71717a] font-medium flex items-center gap-1 bg-[#f4f4f5] px-2 py-1 rounded-[10000px] border border-[#ececee] whitespace-nowrap">
+                👈 스와이프 이동 👉
+              </span>
+
+              {/* Month Navigation Arrows */}
+              <div className="flex items-center gap-0.5 sm:gap-1 bg-[#f4f4f5] p-0.5 sm:p-1 rounded-[12px] sm:rounded-[14px] border border-[#ececee]">
+                <button
+                  type="button"
+                  onClick={onPrevMonth}
+                  className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
+                  title="이전 달"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">이전 달</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={onNextMonth}
+                  className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
+                  title="다음 달"
+                >
+                  <span className="hidden sm:inline">다음 달</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
-            );
-          })}
+            </div>
+          </div>
+
+          {/* Weekday Header (일 ~ 토) */}
+          <div className="grid grid-cols-7 border-t border-[#ececee] bg-[#fafafa]/80 text-center py-2 text-[11px] sm:text-xs font-bold">
+            {KOREAN_DAYS.map((day, idx) => {
+              const isSun = idx === 0;
+              const isSat = idx === 6;
+              return (
+                <div
+                  key={day}
+                  className={`${
+                    isSun
+                      ? 'text-rose-600'
+                      : isSat
+                      ? 'text-blue-600'
+                      : 'text-[#71717a]'
+                  }`}
+                >
+                  {day}
+                </div>
+              );
+            })}
+          </div>
+
         </div>
 
         {/* Calendar Days Grid */}
@@ -167,7 +172,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
               <div
                 key={day.dateString}
                 onClick={() => setSelectedDateStr(day.dateString)}
-                className={`min-h-[82px] sm:min-h-[145px] p-1.5 sm:p-2.5 bg-[#ffffff] transition-colors relative flex flex-col justify-between cursor-pointer group ${
+                className={`min-h-[82px] sm:min-h-[145px] p-1.5 sm:p-2.5 bg-[#ffffff] transition-colors relative flex flex-col justify-between cursor-pointer group overflow-hidden ${
                   !day.isCurrentMonth
                     ? 'bg-[#fafafa] text-[#a1a1aa]'
                     : 'bg-[#ffffff] text-[#18181b]'
@@ -181,11 +186,11 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
               >
                 {/* Day Top Bar */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 overflow-hidden">
                     <span
-                      className={`inline-flex items-center justify-center text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-[10000px] transition-all ${
+                      className={`inline-flex items-center justify-center text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-[10000px] shrink-0 transition-all ${
                         day.isToday
-                          ? 'bg-[#09090b] text-[#ffffff]'
+                          ? 'bg-[#09090b] text-[#ffffff] shadow-2xs'
                           : !day.isCurrentMonth
                           ? 'text-[#a1a1aa]'
                           : isSun
@@ -198,7 +203,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                       {day.dayNumber}
                     </span>
                     {day.isToday && (
-                      <span className="text-[9px] sm:text-[10px] font-extrabold text-[#ff5a00] tracking-tight">
+                      <span className="hidden sm:inline-block text-[10px] font-extrabold text-[#ff5a00] tracking-wider truncate">
                         TODAY
                       </span>
                     )}
