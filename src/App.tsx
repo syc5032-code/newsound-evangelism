@@ -15,6 +15,7 @@ import type { EvangelismSchedule, ViewMode } from './types';
 import { loadSchedules, saveSchedules, generateKakaoShareText } from './utils/storage';
 import { generateMonthGrid } from './utils/dateUtils';
 import { addMonths, subMonths } from 'date-fns';
+import { Plus } from 'lucide-react';
 
 export function App() {
   // 1. Core Data State
@@ -221,8 +222,15 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/70 flex flex-col selection:bg-blue-100 selection:text-blue-900">
+    <div className="relative min-h-screen bg-slate-50/80 flex flex-col selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden">
       
+      {/* Ambient background glow effects */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-blue-300/15 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 -left-32 w-[450px] h-[450px] bg-indigo-300/15 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 right-1/4 w-[500px] h-[500px] bg-violet-300/15 rounded-full blur-3xl" />
+      </div>
+
       {/* Toast Notification */}
       <Toast toasts={toasts} onDismiss={removeToast} />
 
@@ -247,7 +255,7 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         {/* Statistics & Overview Banner */}
         <StatsBanner
@@ -304,11 +312,28 @@ export function App() {
 
       </main>
 
+      {/* Mobile Floating Action Button (FAB) */}
+      <div className="fixed bottom-5 right-5 z-30 sm:hidden">
+        <button
+          type="button"
+          onClick={() => {
+            setEditingSchedule(null);
+            setDuplicateSchedule(null);
+            setApplyModalInitialDate(undefined);
+            setIsApplyModalOpen(true);
+          }}
+          className="flex items-center gap-1.5 px-4 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-full shadow-xl shadow-blue-500/40 font-bold text-xs active:scale-95 transition-all cursor-pointer border border-white/20"
+        >
+          <Plus className="w-4 h-4" />
+          <span>전도 신청</span>
+        </button>
+      </div>
+
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200/80 bg-white py-6 text-center text-xs text-slate-500">
+      <footer className="relative z-10 mt-auto border-t border-slate-200/80 bg-white/80 backdrop-blur-md py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© 2026 뉴사운드교회 청년부 및 교구 노방전도 사역팀</p>
-          <p className="text-slate-400">
+          <p className="font-medium">© 2026 뉴사운드교회 청년부 및 교구 노방전도 사역팀</p>
+          <p className="text-slate-400 italic">
             "너희는 온 천하에 다니며 만민에게 복음을 전파하라 (막 16:15)"
           </p>
         </div>
