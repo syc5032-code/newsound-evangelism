@@ -229,14 +229,14 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                     }`}
                   >
                     {/* Day Top Bar */}
-                    <div className="flex items-center justify-between mb-0.5">
-                      <div className="flex items-center gap-1 overflow-hidden">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-1.5 overflow-hidden">
                         <span
-                          className={`inline-flex items-center justify-center text-[10px] sm:text-xs font-bold w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-[10000px] shrink-0 transition-all ${
+                          className={`inline-flex items-center justify-center text-xs sm:text-sm font-bold w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full shrink-0 transition-all ${
                             day.isToday
-                              ? 'bg-[#09090b] text-[#ffffff] shadow-2xs'
+                              ? 'bg-[#09090b] text-[#ffffff] shadow-sm'
                               : !day.isCurrentMonth
-                              ? 'text-[#a1a1aa]'
+                              ? 'text-[#a1a1aa] font-medium'
                               : isSun
                               ? 'text-rose-600'
                               : isSat
