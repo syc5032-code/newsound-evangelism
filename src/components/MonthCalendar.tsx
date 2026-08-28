@@ -28,13 +28,64 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
   const todayStr = format(new Date(), 'yyyy-MM-dd');
   const [selectedDateStr, setSelectedDateStr] = useState<string>(todayStr);
 
+  // 📱 Touch Swipe Handlers for Month Navigation
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
+  const [touchEndY, setTouchEndY] = useState<number | null>(null);
+
+  const minSwipeDistance = 40; // minimum swipe distance in px
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEndX(null);
+    setTouchEndY(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+    setTouchStartY(e.targetTouches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+    setTouchEndY(e.targetTouches[0].clientY);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null || touchStartY === null || touchEndY === null) return;
+    
+    const distanceX = touchStartX - touchEndX;
+    const distanceY = touchStartY - touchEndY;
+    
+    // Check if movement is primarily horizontal (not vertical scrolling)
+    const isHorizontalSwipe = Math.abs(distanceX) > Math.abs(distanceY) * 1.1;
+
+    if (isHorizontalSwipe && Math.abs(distanceX) > minSwipeDistance) {
+      if (distanceX > 0) {
+        // Swiped Left -> Next Month
+        onNextMonth();
+      } else {
+        // Swiped Right -> Previous Month
+        onPrevMonth();
+      }
+    }
+
+    // Reset coordinates
+    setTouchStartX(null);
+    setTouchStartY(null);
+    setTouchEndX(null);
+    setTouchEndY(null);
+  };
+
   const selectedDayEvents = calendarDays.find((d) => d.dateString === selectedDateStr)?.events || [];
 
   return (
     <div className="space-y-4">
       
-      {/* 📅 Main Calendar Grid Card */}
-      <div className="bg-[#ffffff] rounded-[28px] sm:rounded-[36px] border border-[#ececee] overflow-hidden">
+      {/* 📅 Main Calendar Grid Card with Touch Swipe Support */}
+      <div
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className="bg-[#ffffff] rounded-[28px] sm:rounded-[36px] border border-[#ececee] overflow-hidden select-none transition-all shadow-xs"
+      >
         
         {/* Month Calendar Navigation Header */}
         <div className="p-4 sm:p-6 border-b border-[#ececee] flex flex-wrap items-center justify-between gap-3 bg-[#ffffff]">
@@ -55,8 +106,8 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="sm:hidden text-[11px] text-[#71717a] font-medium flex items-center gap-1 bg-[#f4f4f5] px-2.5 py-1.5 rounded-[12px] border border-[#ececee]">
-              ↔️ 좌우 스크롤
+            <span className="sm:hidden text-[10px] text-[#71717a] font-medium flex items-center gap-1 bg-[#f4f4f5] px-2.5 py-1 rounded-[10000px] border border-[#ececee]">
+              👈 좌우 넘겨 월 이동 👉
             </span>
 
             {/* Month Navigation Arrows */}
@@ -83,132 +134,150 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
           </div>
         </div>
 
-        {/* 📱💻 Horizontal Scrollable Calendar Table Container */}
-        <div className="overflow-x-auto overscroll-x-contain">
-          <div className="min-w-[700px] sm:min-w-0">
-            
-            {/* Weekday Header (일 ~ 토) */}
-            <div className="grid grid-cols-7 border-b border-[#ececee] bg-[#ffffff] text-center py-2.5 text-xs font-semibold">
-              {KOREAN_DAYS.map((day, idx) => {
-                const isSun = idx === 0;
-                const isSat = idx === 6;
-                return (
-                  <div
-                    key={day}
-                    className={`${
-                      isSun
-                        ? 'text-rose-600 font-bold'
-                        : isSat
-                        ? 'text-blue-600 font-bold'
-                        : 'text-[#71717a]'
-                    }`}
-                  >
-                    {day}
+        {/* Weekday Header (일 ~ 토) */}
+        <div className="grid grid-cols-7 border-b border-[#ececee] bg-[#ffffff] text-center py-2 text-xs font-semibold">
+          {KOREAN_DAYS.map((day, idx) => {
+            const isSun = idx === 0;
+            const isSat = idx === 6;
+            return (
+              <div
+                key={day}
+                className={`${
+                  isSun
+                    ? 'text-rose-600 font-bold'
+                    : isSat
+                    ? 'text-blue-600 font-bold'
+                    : 'text-[#71717a]'
+                }`}
+              >
+                {day}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Calendar Days Grid */}
+        <div className="grid grid-cols-7 auto-rows-fr bg-[#ececee] gap-px">
+          {calendarDays.map((day) => {
+            const isSun = day.isSunday;
+            const isSat = day.isSaturday;
+            const isSelected = day.dateString === selectedDateStr;
+
+            return (
+              <div
+                key={day.dateString}
+                onClick={() => setSelectedDateStr(day.dateString)}
+                className={`min-h-[82px] sm:min-h-[145px] p-1.5 sm:p-2.5 bg-[#ffffff] transition-colors relative flex flex-col justify-between cursor-pointer group ${
+                  !day.isCurrentMonth
+                    ? 'bg-[#fafafa] text-[#a1a1aa]'
+                    : 'bg-[#ffffff] text-[#18181b]'
+                } ${
+                  isSelected
+                    ? 'ring-2 ring-inset ring-[#09090b] bg-[#f4f4f5] z-10'
+                    : day.isToday
+                    ? 'ring-1.5 ring-inset ring-[#09090b] bg-[#f4f4f5]/60'
+                    : 'hover:bg-[#fafafa]'
+                }`}
+              >
+                {/* Day Top Bar */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`inline-flex items-center justify-center text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-[10000px] transition-all ${
+                        day.isToday
+                          ? 'bg-[#09090b] text-[#ffffff]'
+                          : !day.isCurrentMonth
+                          ? 'text-[#a1a1aa]'
+                          : isSun
+                          ? 'text-rose-600'
+                          : isSat
+                          ? 'text-blue-600'
+                          : 'text-[#18181b]'
+                      }`}
+                    >
+                      {day.dayNumber}
+                    </span>
+                    {day.isToday && (
+                      <span className="text-[9px] sm:text-[10px] font-extrabold text-[#ff5a00] tracking-tight">
+                        TODAY
+                      </span>
+                    )}
                   </div>
-                );
-              })}
-            </div>
 
-            {/* Calendar Days Grid */}
-            <div className="grid grid-cols-7 auto-rows-fr bg-[#ececee] gap-px">
-              {calendarDays.map((day) => {
-                const isSun = day.isSunday;
-                const isSat = day.isSaturday;
-                const isSelected = day.dateString === selectedDateStr;
+                  {/* Quick Add Button */}
+                  {day.isCurrentMonth && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenApplyModalForDate(day.dateString);
+                      }}
+                      className="hidden sm:flex opacity-0 group-hover:opacity-100 p-1 text-[#71717a] hover:text-[#09090b] hover:bg-[#ececee] rounded-[8px] transition-all cursor-pointer"
+                      title={`${day.dateString} 신청하기`}
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
 
-                return (
-                  <div
-                    key={day.dateString}
-                    onClick={() => setSelectedDateStr(day.dateString)}
-                    className={`min-h-[130px] sm:min-h-[145px] p-2 sm:p-2.5 bg-[#ffffff] transition-colors relative flex flex-col justify-between cursor-pointer group ${
-                      !day.isCurrentMonth
-                        ? 'bg-[#fafafa] text-[#a1a1aa]'
-                        : 'bg-[#ffffff] text-[#18181b]'
-                    } ${
-                      isSelected
-                        ? 'ring-2 ring-inset ring-[#09090b] bg-[#f4f4f5] z-10'
-                        : day.isToday
-                        ? 'ring-1.5 ring-inset ring-[#09090b] bg-[#f4f4f5]/70'
-                        : 'hover:bg-[#fafafa]'
-                    }`}
-                  >
-                    {/* Day Top Bar */}
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-1.5">
-                        <span
-                          className={`inline-flex items-center justify-center text-xs font-bold w-5.5 h-5.5 sm:w-6 sm:h-6 rounded-[10000px] transition-all ${
-                            day.isToday
-                              ? 'bg-[#09090b] text-[#ffffff]'
-                              : !day.isCurrentMonth
-                              ? 'text-[#a1a1aa]'
-                              : isSun
-                              ? 'text-rose-600'
-                              : isSat
-                              ? 'text-blue-600'
-                              : 'text-[#18181b]'
-                          }`}
-                        >
-                          {day.dayNumber}
-                        </span>
-                        {day.isToday && (
-                          <span className="inline-block text-[10px] font-extrabold text-[#ff5a00] tracking-wider">
-                            TODAY
-                          </span>
-                        )}
+                {/* --- MOBILE VIEW: Clean Badges with Cell Name & Time (sm:hidden) --- */}
+                <div className="sm:hidden flex-1 flex flex-col gap-1 mt-1 overflow-hidden">
+                  {day.events.slice(0, 2).map((schedule) => {
+                    const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
+                    return (
+                      <div
+                        key={schedule.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectSchedule(schedule);
+                        }}
+                        className={`px-1 py-0.5 rounded-[6px] text-[10px] font-bold truncate leading-tight border ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
+                        title={schedule.cellName}
+                      >
+                        {schedule.cellName}
                       </div>
+                    );
+                  })}
+                  {day.events.length > 2 && (
+                    <span className="text-[9px] text-[#71717a] font-bold leading-none pl-0.5">
+                      +{day.events.length - 2}
+                    </span>
+                  )}
+                </div>
 
-                      {/* Quick Add Button */}
-                      {day.isCurrentMonth && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenApplyModalForDate(day.dateString);
-                          }}
-                          className="opacity-0 group-hover:opacity-100 p-1 text-[#71717a] hover:text-[#09090b] hover:bg-[#ececee] rounded-[8px] transition-all cursor-pointer"
-                          title={`${day.dateString} 신청하기`}
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
+                {/* --- DESKTOP VIEW: Full Event Cards (hidden sm:flex) --- */}
+                <div className="hidden sm:flex flex-1 flex-col gap-1.5 overflow-y-auto max-h-[105px] pr-0.5 mt-1.5">
+                  {day.events.map((schedule) => {
+                    const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
 
-                    {/* --- Full Event Cards (모바일/PC 모두 넓고 시원하게 정보 표시) --- */}
-                    <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto max-h-[105px] pr-0.5 mt-1">
-                      {day.events.map((schedule) => {
-                        const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
+                    return (
+                      <div
+                        key={schedule.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectSchedule(schedule);
+                        }}
+                        className={`text-left p-1.5 sm:p-2 rounded-[12px] border text-[11px] leading-tight cursor-pointer transition-all hover:scale-[1.02] shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
+                        title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
+                      >
+                        <div className="flex items-center justify-between gap-1 font-bold">
+                          <span className="truncate">{schedule.cellName}</span>
+                          <span className="text-[10px] font-mono opacity-80 shrink-0">
+                            {schedule.startTime}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] opacity-90 mt-0.5">
+                          <span className="truncate max-w-[75px] font-medium">{schedule.location}</span>
+                          <span className="shrink-0 font-semibold">👥 {schedule.participantCount}명</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
 
-                        return (
-                          <div
-                            key={schedule.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSelectSchedule(schedule);
-                            }}
-                            className={`text-left p-1.5 sm:p-2 rounded-[12px] border text-[11px] leading-tight cursor-pointer transition-all hover:scale-[1.02] shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
-                            title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
-                          >
-                            <div className="flex items-center justify-between gap-1 font-bold">
-                              <span className="truncate">{schedule.cellName}</span>
-                              <span className="text-[10px] font-mono opacity-80 shrink-0">
-                                {schedule.startTime}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between text-[10px] opacity-90 mt-0.5">
-                              <span className="truncate max-w-[70px] sm:max-w-[75px] font-medium">{schedule.location}</span>
-                              <span className="shrink-0 font-semibold">👥 {schedule.participantCount}명</span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                  </div>
-                );
-              })}
-            </div>
-
-          </div>
+              </div>
+            );
+          })}
         </div>
 
       </div>

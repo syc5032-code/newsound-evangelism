@@ -301,7 +301,7 @@ export function App() {
       </main>
 
       {/* Mobile Floating Action Button (FAB) */}
-      <div className="fixed bottom-5 right-5 z-30 sm:hidden">
+      <div className="fixed bottom-6 right-5 z-40 sm:hidden">
         <button
           type="button"
           onClick={() => {
@@ -310,10 +310,10 @@ export function App() {
             setApplyModalInitialDate(undefined);
             setIsApplyModalOpen(true);
           }}
-          className="flex items-center gap-1.5 px-4 py-3 bg-[#09090b] text-[#ffffff] rounded-[14px] font-medium text-xs border border-[#27272a] shadow-md active:scale-95 transition-all cursor-pointer"
+          className="w-12 h-12 bg-[#09090b] text-[#ffffff] rounded-full flex items-center justify-center border-2 border-[#ffffff] shadow-xl active:scale-90 transition-transform cursor-pointer"
+          title="새 노방전도 신청"
         >
-          <Plus className="w-4 h-4" />
-          <span>노방전도 신청</span>
+          <Plus className="w-5 h-5 text-[#ffffff]" />
         </button>
       </div>
 
