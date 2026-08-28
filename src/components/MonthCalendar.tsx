@@ -40,39 +40,31 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
   const totalWeeks = allWeeks.length || 6;
   const [visibleWeeks, setVisibleWeeks] = useState<number>(totalWeeks);
 
-  // Determine which weeks to display based on slider and selectedDate
+  // Determine which weeks to display based on slider (항상 1주차부터 시작하여 N주치 표시)
   const displayedDays = React.useMemo(() => {
     if (visibleWeeks >= totalWeeks) {
       return calendarDays;
     }
-    const selectedWeekIdx = Math.max(
-      0,
-      allWeeks.findIndex((w) => w.some((d) => d.dateString === selectedDateStr))
-    );
-    let startIdx = selectedWeekIdx;
-    if (startIdx + visibleWeeks > totalWeeks) {
-      startIdx = Math.max(0, totalWeeks - visibleWeeks);
-    }
-    const slicedWeeks = allWeeks.slice(startIdx, startIdx + visibleWeeks);
+    const slicedWeeks = allWeeks.slice(0, visibleWeeks);
     return slicedWeeks.flat();
-  }, [allWeeks, visibleWeeks, totalWeeks, selectedDateStr, calendarDays]);
+  }, [allWeeks, visibleWeeks, totalWeeks, calendarDays]);
 
-  // Dynamic cell minimum height based on visible weeks slider
+  // Dynamic cell minimum height based on visible weeks slider (카드 밖으로 잘리지 않도록 균등 수납)
   const getCellMinHeight = () => {
     switch (visibleWeeks) {
       case 1:
-        return 'min-h-[220px] sm:min-h-[300px]';
+        return 'min-h-[180px] sm:min-h-[250px]';
       case 2:
-        return 'min-h-[150px] sm:min-h-[200px]';
+        return 'min-h-[125px] sm:min-h-[165px]';
       case 3:
-        return 'min-h-[115px] sm:min-h-[150px]';
+        return 'min-h-[95px] sm:min-h-[120px]';
       case 4:
-        return 'min-h-[92px] sm:min-h-[118px]';
+        return 'min-h-[80px] sm:min-h-[95px]';
       case 5:
-        return 'min-h-[80px] sm:min-h-[96px]';
+        return 'min-h-[75px] sm:min-h-[86px]';
       case 6:
       default:
-        return 'min-h-[72px] sm:min-h-[82px] lg:min-h-[86px]';
+        return 'min-h-[70px] sm:min-h-[80px] lg:min-h-[84px]';
     }
   };
 
