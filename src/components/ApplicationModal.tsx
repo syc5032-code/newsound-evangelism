@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Sparkles, Lock } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
-import { CELL_PRESETS, CORPS_PRESETS, LOCATION_PRESETS, CELL_COLORS, COLOR_KEYS, getCellColor } from '../data/presetData';
+import { CORPS_PRESETS, LOCATION_PRESETS, CELL_COLORS, COLOR_KEYS, getCellColor } from '../data/presetData';
 import { getDayOfWeekKorean, calculateDurationMinutes, formatDurationString } from '../utils/dateUtils';
 import confetti from 'canvas-confetti';
 import { format } from 'date-fns';
@@ -118,16 +118,6 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
     setParticipants(participants.filter((p) => p !== name));
   };
 
-  // Quick cell selector
-  const handleSelectCell = (preset: string) => {
-    setCellName(preset);
-    setThemeColor(getCellColor(preset));
-    if (!cellLeader) {
-      // Auto suggest leader name by stripping '셀'
-      const cleanName = preset.replace(/셀$/, '');
-      setCellLeader(cleanName);
-    }
-  };
 
   // Form submit
   const handleSubmit = (e: React.FormEvent) => {
@@ -237,30 +227,11 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
           {/* 1. 신청셀 & 소속 군단 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             
-            {/* 신청셀 */}
-            <div className="space-y-2">
+            {/* 신청셀 (수기 직접 입력) */}
+            <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-700">
                 신청셀 <span className="text-rose-500">*</span>
               </label>
-              
-              {/* Preset 셀 chips */}
-              <div className="flex flex-wrap gap-1.5 mb-1.5">
-                {CELL_PRESETS.map((preset) => (
-                  <button
-                    type="button"
-                    key={preset}
-                    onClick={() => handleSelectCell(preset)}
-                    className={`px-2.5 py-1 text-xs rounded-lg border font-bold transition-all cursor-pointer ${
-                      cellName === preset
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    {preset}
-                  </button>
-                ))}
-              </div>
-
               <input
                 type="text"
                 value={cellName}
@@ -268,7 +239,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                   setCellName(e.target.value);
                   setThemeColor(getCellColor(e.target.value));
                 }}
-                placeholder="예: 송예찬셀"
+                placeholder="신청셀 이름을 입력해주세요 (예: 송예찬셀)"
                 className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 required
               />

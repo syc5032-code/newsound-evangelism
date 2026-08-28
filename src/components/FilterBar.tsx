@@ -13,6 +13,7 @@ interface FilterBarProps {
   onSelectedLocationChange: (loc: string) => void;
   onResetFilters: () => void;
   totalFilteredCount: number;
+  availableCells?: string[];
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
@@ -26,8 +27,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onSelectedLocationChange,
   onResetFilters,
   totalFilteredCount,
+  availableCells,
 }) => {
   const isFiltered = searchQuery !== '' || selectedCell !== '' || selectedCorps !== '' || selectedLocation !== '';
+
+  const cellsList = availableCells && availableCells.length > 0 ? availableCells : CELL_PRESETS;
 
   return (
     <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
@@ -62,7 +66,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           className="flex-1 sm:flex-initial text-xs sm:text-sm py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
         >
           <option value="">전체 셀 보기</option>
-          {CELL_PRESETS.map((cell) => (
+          {cellsList.map((cell) => (
             <option key={cell} value={cell}>
               {cell}
             </option>

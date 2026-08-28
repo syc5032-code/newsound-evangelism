@@ -65,6 +65,17 @@ export function App() {
     localStorage.setItem('NEWSOUND_IS_ADMIN', isAdmin ? 'true' : 'false');
   }, [isAdmin]);
 
+  // Extract all unique registered cells dynamically from schedules
+  const availableCells = useMemo(() => {
+    const set = new Set<string>();
+    schedules.forEach((s) => {
+      if (s.cellName && s.cellName.trim()) {
+        set.add(s.cellName.trim());
+      }
+    });
+    return Array.from(set).sort();
+  }, [schedules]);
+
   // Filtered schedules
   const filteredSchedules = useMemo(() => {
     return schedules.filter((item) => {
@@ -243,6 +254,7 @@ export function App() {
           onSelectedLocationChange={setSelectedLocation}
           onResetFilters={handleResetFilters}
           totalFilteredCount={filteredSchedules.length}
+          availableCells={availableCells}
         />
 
         {/* Active View: Month / Week / List */}
