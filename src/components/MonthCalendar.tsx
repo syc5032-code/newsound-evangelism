@@ -241,8 +241,8 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                       )}
                     </div>
 
-                    {/* --- Multiple Event Badges (하루에 여러 개 일정이 줄줄이 잘 보이도록 렌더링) --- */}
-                    <div className="flex-1 flex flex-col gap-0.5 mt-0.5 overflow-y-auto max-h-[140px] pr-0.5">
+                    {/* --- Multiple Event Badges (모바일 & 데스크탑 셀이름 또렷하게 노출) --- */}
+                    <div className="flex-1 flex flex-col gap-0.5 mt-0.5 overflow-y-auto max-h-[140px] pr-0.5 pb-0.5">
                       {day.events.map((schedule) => {
                         const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
                         return (
@@ -252,15 +252,15 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                               e.stopPropagation();
                               onSelectSchedule(schedule);
                             }}
-                            className={`px-1 py-0.5 rounded-[4px] sm:rounded-[6px] border text-[9px] sm:text-[10px] font-bold leading-tight truncate flex flex-col justify-center cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
+                            className={`px-1 py-0.5 rounded-[4px] sm:rounded-[6px] border text-[9.5px] sm:text-[10.5px] font-bold leading-tight truncate flex items-center justify-between gap-0.5 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
                             title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
                           >
-                            <div className="flex items-center justify-between gap-0.5 truncate">
-                              <span className="truncate">{schedule.cellName}</span>
-                              <span className="text-[8px] sm:text-[9px] font-mono opacity-85 shrink-0">
-                                {schedule.startTime}
-                              </span>
-                            </div>
+                            <span className="truncate flex-1 font-bold text-[9.5px] sm:text-[10.5px]">
+                              {schedule.cellName}
+                            </span>
+                            <span className="text-[8px] sm:text-[9px] font-mono opacity-80 shrink-0 hidden xs:inline sm:inline">
+                              {schedule.startTime}
+                            </span>
                           </div>
                         );
                       })}
