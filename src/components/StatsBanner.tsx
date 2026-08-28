@@ -81,41 +81,47 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
 
   const maxCorpsCount = Math.max(...Object.values(corpsStats).map((v) => v.count), 1);
 
+  // Scripture words for Gemini Academy style animated stagger
+  const scriptureWords = [
+    "“", "오직", "성령이", "너희에게", "임하시면", "너희가", "권능을", "받고",
+    "예루살렘과", "온", "유대와", "사마리아와", "땅끝까지", "이르러",
+    "내", "증인이", "되리라", "하시니라", "”"
+  ];
+
   return (
     <div className="space-y-4 mb-6">
       
-      {/* 🌟 Awesomic Editorial Hero Card (Pure Typography, 36px radius, Hairline Border) */}
+      {/* 🌟 Awesomic Minimal Hero Card with Animated Scripture (Gemini Academy Style) */}
       <div className="bg-[#ffffff] rounded-[36px] border border-[#ececee] p-6 sm:p-10 transition-all">
         
-        {/* Top Tag Row */}
-        <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-6">
+        {/* Top Tag */}
+        <div className="mb-4 sm:mb-6">
           <span className="inline-flex items-center px-2.5 py-1 rounded-[12px] bg-[#ff5a00] text-[#ffffff] text-xs font-semibold tracking-wide">
             사도행전 1:8
           </span>
-          <span className="inline-flex items-center px-2.5 py-1 rounded-[12px] bg-[#f4f4f5] text-[#18181b] border border-[#ececee] text-xs font-normal">
-            뉴스통신 노방전도 비전
-          </span>
-          <span className="text-xs text-[#71717a] ml-auto hidden sm:inline">
-            NEWSOUND CHURCH STREET EVANGELISM
-          </span>
         </div>
 
-        {/* Big Bold Display Headline (Cosmica editorial weight 600) */}
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-semibold text-[#09090b] leading-[1.22] tracking-tight text-balance">
-          “ 오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅끝까지 이르러 내 증인이 되리라 하시니라 ”
+        {/* Animated Headline (Wave / Stagger Float like Gemini Academy) */}
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-semibold text-[#09090b] leading-[1.24] tracking-tight text-balance flex flex-wrap gap-x-2.5 sm:gap-x-3 gap-y-1.5 sm:gap-y-2">
+          {scriptureWords.map((word, idx) => (
+            <span
+              key={`${word}-${idx}`}
+              className="hero-word-stagger hover:text-[#ff5a00] hover:scale-105 transition-transform inline-block cursor-default"
+              style={{
+                animationDelay: `${0.1 + idx * 0.045}s`,
+              }}
+            >
+              <span
+                className="hero-word-float inline-block"
+                style={{
+                  animationDelay: `${idx * 0.18}s`,
+                }}
+              >
+                {word}
+              </span>
+            </span>
+          ))}
         </h2>
-
-        {/* Supporting Meta */}
-        <div className="mt-5 pt-4 border-t border-[#ececee] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs sm:text-sm text-[#52525b]">
-          <p>
-            성령의 능력으로 거리에 나가 복음의 빛을 비추는 뉴사운드교회 청년부 사역
-          </p>
-          <div className="flex items-center gap-3 text-xs text-[#71717a]">
-            <span>마곡역 · 롯데리아 앞 거점</span>
-            <span>•</span>
-            <span>2026 청년부 연합</span>
-          </div>
-        </div>
 
       </div>
 

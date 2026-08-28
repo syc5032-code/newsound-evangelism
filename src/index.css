@@ -60,3 +60,39 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1aa;
 }
+
+/* 🌟 Animated Scripture Typography (Wave / Stagger Float like Gemini Academy) */
+@keyframes heroLetterFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes heroGentleFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.hero-word-stagger {
+  display: inline-block;
+  opacity: 0;
+  animation: heroLetterFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-word-float {
+  display: inline-block;
+  animation: heroGentleFloat 4.5s ease-in-out infinite;
+}
