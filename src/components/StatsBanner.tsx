@@ -81,32 +81,32 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
 
   const maxCorpsCount = Math.max(...Object.values(corpsStats).map((v) => v.count), 1);
 
-  // Scripture words for Gemini Academy style animated stagger
+  // Scripture words with opening/closing quotes attached to prevent orphan quote marks
   const scriptureWords = [
-    "“", "오직", "성령이", "너희에게", "임하시면", "너희가", "권능을", "받고",
+    "“오직", "성령이", "너희에게", "임하시면", "너희가", "권능을", "받고",
     "예루살렘과", "온", "유대와", "사마리아와", "땅끝까지", "이르러",
-    "내", "증인이", "되리라", "하시니라", "”"
+    "내", "증인이", "되리라", "하시니라”"
   ];
 
   return (
     <div className="space-y-4 mb-6">
       
-      {/* 🌟 Awesomic Minimal Hero Card with Animated Scripture (Gemini Academy Style) */}
-      <div className="bg-[#ffffff] rounded-[36px] border border-[#ececee] p-6 sm:p-10 transition-all">
+      {/* 🌟 Awesomic Hero Card with Punchy Bold Typography & Floating Stagger Motion */}
+      <div className="bg-[#ffffff] rounded-[32px] sm:rounded-[36px] border border-[#ececee] p-6 sm:p-10 transition-all">
         
         {/* Top Tag */}
-        <div className="mb-4 sm:mb-6">
-          <span className="inline-flex items-center px-2.5 py-1 rounded-[12px] bg-[#ff5a00] text-[#ffffff] text-xs font-semibold tracking-wide">
+        <div className="mb-4 sm:mb-5">
+          <span className="inline-flex items-center px-3 py-1 rounded-[12px] bg-[#ff5a00] text-[#ffffff] text-xs sm:text-[13px] font-bold tracking-wide shadow-2xs">
             사도행전 1:8
           </span>
         </div>
 
-        {/* Animated Headline (Wave / Stagger Float like Gemini Academy) */}
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-semibold text-[#09090b] leading-[1.24] tracking-tight text-balance flex flex-wrap gap-x-2.5 sm:gap-x-3 gap-y-1.5 sm:gap-y-2">
+        {/* High-Impact Animated Headline */}
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] font-extrabold text-[#09090b] leading-[1.32] sm:leading-[1.26] tracking-tight break-keep text-balance flex flex-wrap gap-x-2 sm:gap-x-3 gap-y-1 sm:gap-y-2">
           {scriptureWords.map((word, idx) => (
             <span
               key={`${word}-${idx}`}
-              className="hero-word-stagger hover:text-[#ff5a00] hover:scale-105 transition-transform inline-block cursor-default"
+              className="hero-word-stagger hover:text-[#ff5a00] hover:scale-105 transition-all inline-block cursor-default select-none"
               style={{
                 animationDelay: `${0.1 + idx * 0.045}s`,
               }}
@@ -137,7 +137,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-1.5">
-            <span className="text-3xl sm:text-4xl font-semibold text-[#09090b] tracking-tight">{totalEvents}</span>
+            <span className="text-3xl sm:text-4xl font-bold text-[#09090b] tracking-tight">{totalEvents}</span>
             <span className="text-sm font-medium text-[#71717a]">회</span>
           </div>
           <p className="text-xs text-[#a1a1aa] mt-1">이번 달 확정된 셀 일정</p>
@@ -152,7 +152,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-1.5">
-            <span className="text-3xl sm:text-4xl font-semibold text-[#09090b] tracking-tight">{totalParticipants}</span>
+            <span className="text-3xl sm:text-4xl font-bold text-[#09090b] tracking-tight">{totalParticipants}</span>
             <span className="text-sm font-medium text-[#71717a]">명</span>
           </div>
           <p className="text-xs text-[#a1a1aa] mt-1">셀원들의 열정적인 동참</p>
@@ -167,7 +167,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-1.5">
-            <span className="text-3xl sm:text-4xl font-semibold text-[#09090b] tracking-tight">
+            <span className="text-3xl sm:text-4xl font-bold text-[#09090b] tracking-tight">
               {Math.floor(totalMinutes / 60)}
             </span>
             <span className="text-sm font-medium text-[#71717a]">
@@ -188,7 +188,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
             </div>
           </div>
           <div className="mt-3">
-            <p className="text-base font-semibold text-[#09090b] truncate" title={topLocation}>
+            <p className="text-base font-bold text-[#09090b] truncate" title={topLocation}>
               {topLocation}
             </p>
             <p className="text-xs text-[#a1a1aa] mt-1">
@@ -210,7 +210,7 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
             </div>
             {nextUpcoming ? (
               <div className="mt-2.5">
-                <p className="text-base font-semibold text-[#ffffff] tracking-tight truncate">
+                <p className="text-base font-bold text-[#ffffff] tracking-tight truncate">
                   {nextUpcoming.cellName}
                   {nextUpcoming.corpsName && (
                     <span className="text-xs font-normal text-[#a1a1aa] ml-1">({nextUpcoming.corpsName})</span>
