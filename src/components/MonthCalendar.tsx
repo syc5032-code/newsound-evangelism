@@ -93,7 +93,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="bg-[#ffffff] rounded-[28px] sm:rounded-[36px] border border-[#ececee] overflow-hidden select-none transition-all shadow-xs"
+        className="bg-[#ffffff] rounded-[28px] sm:rounded-[36px] border border-[#ececee] overflow-hidden select-none transition-all shadow-xs isolate"
       >
         
         {/* Month Navigation Header + Weekday Bar */}
@@ -168,30 +168,38 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         </div>
 
         {/* Calendar Days Grid (한 달 전체 주 단위 렌더링) */}
-        <div className="bg-[#ececee] flex flex-col gap-px transition-all">
-          {allWeeks.map((week, weekIdx) => (
-            <div key={weekIdx} className="grid grid-cols-7 gap-px bg-[#ececee]">
-              {week.map((day) => {
-                const isSun = day.isSunday;
-                const isSat = day.isSaturday;
-                const isSelected = day.dateString === selectedDateStr;
+        <div className="bg-[#ececee] flex flex-col gap-px transition-all rounded-b-[27px] sm:rounded-b-[35px] overflow-hidden">
+          {allWeeks.map((week, weekIdx) => {
+            const isLastWeek = weekIdx === allWeeks.length - 1;
+            return (
+              <div key={weekIdx} className="grid grid-cols-7 gap-px bg-[#ececee]">
+                {week.map((day, dayIdx) => {
+                  const isSun = day.isSunday;
+                  const isSat = day.isSaturday;
+                  const isSelected = day.dateString === selectedDateStr;
+                  const isBottomLeft = isLastWeek && dayIdx === 0;
+                  const isBottomRight = isLastWeek && dayIdx === 6;
 
-                return (
-                  <div
-                    key={day.dateString}
-                    onClick={() => setSelectedDateStr(day.dateString)}
-                    className={`min-h-[72px] sm:min-h-[82px] lg:min-h-[86px] p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group ${
-                      !day.isCurrentMonth
-                        ? 'bg-[#fafafa] text-[#a1a1aa]'
-                        : 'bg-[#ffffff] text-[#18181b]'
-                    } ${
-                      isSelected
-                        ? 'ring-2 ring-inset ring-[#09090b] bg-[#f4f4f5] z-10'
-                        : day.isToday
-                        ? 'ring-1.5 ring-inset ring-[#09090b] bg-[#f4f4f5]/60'
-                        : 'hover:bg-[#fafafa]'
-                    }`}
-                  >
+                  return (
+                    <div
+                      key={day.dateString}
+                      onClick={() => setSelectedDateStr(day.dateString)}
+                      className={`min-h-[72px] sm:min-h-[82px] lg:min-h-[86px] p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group overflow-hidden ${
+                        isBottomLeft ? 'rounded-bl-[26px] sm:rounded-bl-[34px]' : ''
+                      } ${
+                        isBottomRight ? 'rounded-br-[26px] sm:rounded-br-[34px]' : ''
+                      } ${
+                        !day.isCurrentMonth
+                          ? 'bg-[#fafafa] text-[#a1a1aa]'
+                          : 'bg-[#ffffff] text-[#18181b]'
+                      } ${
+                        isSelected
+                          ? 'ring-2 ring-inset ring-[#09090b] bg-[#f4f4f5] z-10'
+                          : day.isToday
+                          ? 'ring-1.5 ring-inset ring-[#09090b] bg-[#f4f4f5]/60'
+                          : 'hover:bg-[#fafafa]'
+                      }`}
+                    >
                     {/* Day Top Bar */}
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-1.5 overflow-hidden">
@@ -262,7 +270,8 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 );
               })}
             </div>
-          ))}
+          );
+        })}
         </div>
 
       </div>
