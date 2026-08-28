@@ -40,6 +40,7 @@ export function App() {
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [applyModalInitialDate, setApplyModalInitialDate] = useState<string | undefined>(undefined);
   const [editingSchedule, setEditingSchedule] = useState<EvangelismSchedule | null>(null);
+  const [duplicateSchedule, setDuplicateSchedule] = useState<EvangelismSchedule | null>(null);
   const [selectedDetailSchedule, setSelectedDetailSchedule] = useState<EvangelismSchedule | null>(null);
   const [isDataModalOpen, setIsDataModalOpen] = useState(false);
 
@@ -111,7 +112,7 @@ export function App() {
     );
   }, [currentDate, filteredSchedules]);
 
-  // Schedule Save Handler (Add / Edit)
+  // Schedule Save Handler (Add / Edit / Duplicate)
   const handleSaveSchedule = (schedule: EvangelismSchedule) => {
     if (editingSchedule) {
       setSchedules((prev) =>
@@ -122,6 +123,7 @@ export function App() {
     } else {
       setSchedules((prev) => [schedule, ...prev]);
       addToast(`[${schedule.cellName}] 노방전도 신청이 성공적으로 등록되었습니다! 🎉`, 'success');
+      setDuplicateSchedule(null);
     }
   };
 
@@ -138,8 +140,18 @@ export function App() {
   // Schedule Edit Handler
   const handleStartEditSchedule = (schedule: EvangelismSchedule) => {
     setEditingSchedule(schedule);
+    setDuplicateSchedule(null);
     setSelectedDetailSchedule(null);
     setIsApplyModalOpen(true);
+  };
+
+  // Schedule Duplicate Handler (연합 출격 / 일정 복사 신청)
+  const handleDuplicateSchedule = (schedule: EvangelismSchedule) => {
+    setEditingSchedule(null);
+    setDuplicateSchedule(schedule);
+    setSelectedDetailSchedule(null);
+    setIsApplyModalOpen(true);
+    addToast(`[${schedule.cellName}]의 일시 및 장소가 복사되었습니다. 신청셀 정보를 입력해주세요! ✨`, 'info');
   };
 
   // Auth request handler from DetailModal
@@ -190,6 +202,7 @@ export function App() {
   // Open apply modal for specific date
   const handleOpenApplyModalForDate = (dateStr: string) => {
     setEditingSchedule(null);
+    setDuplicateSchedule(null);
     setApplyModalInitialDate(dateStr);
     setIsApplyModalOpen(true);
   };
@@ -219,6 +232,7 @@ export function App() {
         onViewModeChange={setViewMode}
         onOpenApplyModal={() => {
           setEditingSchedule(null);
+          setDuplicateSchedule(null);
           setApplyModalInitialDate(undefined);
           setIsApplyModalOpen(true);
         }}
@@ -306,10 +320,12 @@ export function App() {
         onClose={() => {
           setIsApplyModalOpen(false);
           setEditingSchedule(null);
+          setDuplicateSchedule(null);
         }}
         onSave={handleSaveSchedule}
         initialDate={applyModalInitialDate}
         editSchedule={editingSchedule}
+        duplicateSchedule={duplicateSchedule}
       />
 
       {/* Detail Modal */}
@@ -321,6 +337,7 @@ export function App() {
         onDelete={handleDeleteSchedule}
         onRequestAuth={handleRequestAuth}
         onCopyShareText={handleCopyShareText}
+        onDuplicateSchedule={handleDuplicateSchedule}
       />
 
       {/* Password Authentication Modal */}

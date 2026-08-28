@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Clock, MapPin, Phone, Users, MessageSquare, Copy, Edit, Trash2, MessageCircle, UserPlus } from 'lucide-react';
+import { X, Clock, MapPin, Phone, Users, MessageSquare, Copy, Edit, Trash2, MessageCircle, UserPlus, CopyPlus } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
 import { CELL_COLORS } from '../data/presetData';
 import { formatDateFullKorean, formatDurationString, getDDayString } from '../utils/dateUtils';
@@ -12,6 +12,7 @@ interface DetailModalProps {
   onDelete: (id: string) => void;
   onRequestAuth: (schedule: EvangelismSchedule, action: 'edit' | 'delete') => void;
   onCopyShareText: (schedule: EvangelismSchedule) => void;
+  onDuplicateSchedule: (schedule: EvangelismSchedule) => void;
 }
 
 export const DetailModal: React.FC<DetailModalProps> = ({
@@ -22,6 +23,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
   onDelete,
   onRequestAuth,
   onCopyShareText,
+  onDuplicateSchedule,
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -252,7 +254,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({
         {/* Modal Sticky Footer Actions */}
         <div className="p-4 sm:p-5 border-t border-slate-100 bg-slate-50/90 flex flex-wrap items-center justify-between gap-2.5">
           
-          {/* Left: Delete & Edit buttons */}
+          {/* Left: Delete & Edit & Duplicate buttons */}
           <div className="flex items-center gap-2">
             {!showDeleteConfirm && (
               <button
@@ -273,6 +275,17 @@ export const DetailModal: React.FC<DetailModalProps> = ({
             >
               <Edit className="w-3.5 h-3.5" />
               <span>수정</span>
+            </button>
+
+            {/* 이 일정 복사하여 신청 (동반/연합 전도) */}
+            <button
+              type="button"
+              onClick={() => onDuplicateSchedule(schedule)}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 rounded-xl transition-all cursor-pointer"
+              title="동일한 일시/장소로 우리 셀도 신청하기"
+            >
+              <CopyPlus className="w-3.5 h-3.5" />
+              <span>이 일정 복사 신청</span>
             </button>
           </div>
 

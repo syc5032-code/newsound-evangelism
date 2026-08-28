@@ -12,6 +12,7 @@ interface ApplicationModalProps {
   onSave: (schedule: EvangelismSchedule) => void;
   initialDate?: string;
   editSchedule?: EvangelismSchedule | null;
+  duplicateSchedule?: EvangelismSchedule | null;
 }
 
 export const ApplicationModal: React.FC<ApplicationModalProps> = ({
@@ -20,8 +21,10 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
   onSave,
   initialDate,
   editSchedule,
+  duplicateSchedule,
 }) => {
   const isEditing = !!editSchedule;
+  const isDuplicating = !isEditing && !!duplicateSchedule;
 
   // Form states
   const [cellName, setCellName] = useState('');
@@ -56,8 +59,23 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       setPrayerTopics(editSchedule.prayerTopics || '');
       setPassword(editSchedule.password || '1234');
       setThemeColor(editSchedule.themeColor || 'blue');
+    } else if (duplicateSchedule) {
+      // Duplicate schedule info (same date/time/location/corps, blank cell info for new applicant)
+      setDate(duplicateSchedule.date || format(new Date(), 'yyyy-MM-dd'));
+      setStartTime(duplicateSchedule.startTime || '14:00');
+      setEndTime(duplicateSchedule.endTime || '16:00');
+      setLocation(duplicateSchedule.location || '');
+      setCorpsName(duplicateSchedule.corpsName || '김태홍 군단');
+      setThemeColor(duplicateSchedule.themeColor || 'blue');
+      setCellName('');
+      setCellLeader('');
+      setContact('');
+      setParticipantCount(5);
+      setParticipants([]);
+      setPrayerTopics('');
+      setPassword('1234');
     } else {
-      // New application
+      // New clean application
       const defaultDate = initialDate || format(new Date(), 'yyyy-MM-dd');
       setDate(defaultDate);
       setCellName('');
@@ -74,7 +92,7 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
       setThemeColor('blue');
     }
     setErrorMsg('');
-  }, [editSchedule, initialDate, isOpen]);
+  }, [editSchedule, duplicateSchedule, initialDate, isOpen]);
 
   if (!isOpen) return null;
 
@@ -199,10 +217,10 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
             </div>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-                {isEditing ? '노방전도 일정 수정' : '새 노방전도 신청하기'}
+                {isEditing ? '노방전도 일정 수정' : isDuplicating ? '일정 복사하여 신청 (동반/연합)' : '새 노방전도 신청하기'}
               </h2>
               <p className="text-xs text-slate-500">
-                {isEditing ? '신청된 세부 정보를 수정합니다.' : '각 셀의 노방전도 출격 일정을 등록해주세요.'}
+                {isEditing ? '신청된 세부 정보를 수정합니다.' : isDuplicating ? `[${duplicateSchedule?.cellName}]의 일시/장소 기반으로 신청합니다.` : '각 셀의 노방전도 출격 일정을 등록해주세요.'}
               </p>
             </div>
           </div>
@@ -219,6 +237,20 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
           
+          {isDuplicating && duplicateSchedule && (
+            <div className="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200/80 text-indigo-900 text-xs flex items-start gap-2.5">
+              <Sparkles className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-indigo-950">
+                  [{duplicateSchedule.cellName}]의 전도 일정이 복사되었습니다! ✨
+                </p>
+                <p className="text-[11px] text-indigo-700 mt-0.5">
+                  군단, 일자({duplicateSchedule.date}), 시간({duplicateSchedule.startTime}~{duplicateSchedule.endTime}), 장소({duplicateSchedule.location})가 자동 입력되었습니다. 우리 <strong>신청셀 이름</strong>과 <strong>신청자 정보</strong>를 입력해주세요.
+                </p>
+              </div>
+            </div>
+          )}
+
           {errorMsg && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
               <span>⚠️ {errorMsg}</span>
