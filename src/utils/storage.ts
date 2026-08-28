@@ -2,7 +2,7 @@ import type { EvangelismSchedule } from '../types';
 import { INITIAL_SAMPLE_SCHEDULES } from '../data/presetData';
 import { formatDateFullKorean, formatDurationString } from './dateUtils';
 
-const STORAGE_KEY = 'CHURCH_EVANGELISM_CORPS_V3';
+const STORAGE_KEY = 'CHURCH_EVANGELISM_CORPS_V4';
 
 export const loadSchedules = (): EvangelismSchedule[] => {
   try {
