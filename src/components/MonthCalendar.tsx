@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import type { EvangelismSchedule, CalendarDay } from '../types';
 import { KOREAN_DAYS } from '../utils/dateUtils';
+import { CELL_COLORS } from '../data/presetData';
 import { format } from 'date-fns';
 
 interface MonthCalendarProps {
@@ -64,14 +65,21 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         </div>
       </div>
 
-      {/* Weekday Header (일 ~ 토) */}
-      <div className="grid grid-cols-7 border-b border-[#ececee] bg-[#f4f4f5] text-center py-2.5 text-xs font-medium">
+      {/* Weekday Header (일 ~ 토, 토요일 파란색 / 일요일 빨간색) */}
+      <div className="grid grid-cols-7 border-b border-[#ececee] bg-[#f4f4f5] text-center py-2.5 text-xs font-semibold">
         {KOREAN_DAYS.map((day, idx) => {
           const isSun = idx === 0;
+          const isSat = idx === 6;
           return (
             <div
               key={day}
-              className={`${isSun ? 'text-[#ff5a00]' : 'text-[#71717a]'}`}
+              className={`${
+                isSun
+                  ? 'text-rose-600 font-bold'
+                  : isSat
+                  ? 'text-blue-600 font-bold'
+                  : 'text-[#71717a]'
+              }`}
             >
               {day}
             </div>
@@ -83,34 +91,41 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
       <div className="grid grid-cols-7 auto-rows-fr bg-[#ececee] gap-px">
         {calendarDays.map((day) => {
           const isSun = day.isSunday;
+          const isSat = day.isSaturday;
 
           return (
             <div
               key={day.dateString}
-              className={`min-h-[125px] sm:min-h-[145px] p-2.5 sm:p-3 bg-[#ffffff] transition-colors relative flex flex-col justify-between group ${
+              className={`min-h-[125px] sm:min-h-[145px] p-2 sm:p-2.5 bg-[#ffffff] transition-colors relative flex flex-col justify-between group ${
                 !day.isCurrentMonth
                   ? 'bg-[#fafafa] text-[#a1a1aa]'
+                  : isSun
+                  ? 'bg-rose-50/10'
+                  : isSat
+                  ? 'bg-blue-50/10'
                   : 'text-[#18181b]'
-              } ${day.isToday ? 'bg-[#f4f4f5]/60' : 'hover:bg-[#fafafa]'}`}
+              } ${day.isToday ? 'bg-[#f4f4f5] ring-1 ring-inset ring-[#09090b]' : 'hover:bg-[#fafafa]'}`}
             >
               {/* Day Top Bar */}
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
                   <span
-                    className={`inline-flex items-center justify-center text-xs font-semibold w-6 h-6 rounded-[10000px] transition-all ${
+                    className={`inline-flex items-center justify-center text-xs font-bold w-6 h-6 rounded-[10000px] transition-all ${
                       day.isToday
                         ? 'bg-[#09090b] text-[#ffffff]'
                         : !day.isCurrentMonth
                         ? 'text-[#a1a1aa]'
                         : isSun
-                        ? 'text-[#ff5a00]'
+                        ? 'text-rose-600'
+                        : isSat
+                        ? 'text-blue-600'
                         : 'text-[#18181b]'
                     }`}
                   >
                     {day.dayNumber}
                   </span>
                   {day.isToday && (
-                    <span className="hidden sm:inline-block text-[10px] font-semibold text-[#ff5a00]">
+                    <span className="hidden sm:inline-block text-[10px] font-bold text-[#09090b]">
                       TODAY
                     </span>
                   )}
@@ -124,7 +139,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                       e.stopPropagation();
                       onOpenApplyModalForDate(day.dateString);
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-[#71717a] hover:text-[#09090b] hover:bg-[#f4f4f5] rounded-[10px] transition-all cursor-pointer"
+                    className="opacity-0 group-hover:opacity-100 p-1 text-[#71717a] hover:text-[#09090b] hover:bg-[#ececee] rounded-[10px] transition-all cursor-pointer"
                     title={`${day.dateString} 신청하기`}
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -132,25 +147,27 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 )}
               </div>
 
-              {/* Day Events Container */}
+              {/* Day Events Container with Colored Cell Badges */}
               <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto max-h-[90px] sm:max-h-[105px] pr-0.5">
                 {day.events.map((schedule) => {
+                  const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
+
                   return (
                     <div
                       key={schedule.id}
                       onClick={() => onSelectSchedule(schedule)}
-                      className="text-left p-1.5 sm:p-2 rounded-[12px] border border-[#ececee] bg-[#ffffff] hover:bg-[#f4f4f5] text-[11px] leading-tight cursor-pointer transition-colors"
+                      className={`text-left p-1.5 sm:p-2 rounded-[12px] border text-[11px] leading-tight cursor-pointer transition-all hover:scale-[1.02] shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
                       title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
                     >
-                      <div className="flex items-center justify-between gap-1 font-semibold text-[#09090b]">
+                      <div className="flex items-center justify-between gap-1 font-bold">
                         <span className="truncate">{schedule.cellName}</span>
-                        <span className="text-[10px] text-[#71717a] font-normal shrink-0">
+                        <span className="text-[10px] font-mono opacity-80 shrink-0">
                           {schedule.startTime}
                         </span>
                       </div>
-                      <div className="hidden sm:flex items-center justify-between text-[10px] text-[#52525b] mt-1">
-                        <span className="truncate max-w-[75px]">{schedule.location}</span>
-                        <span className="shrink-0 text-[#71717a]">👥 {schedule.participantCount}명</span>
+                      <div className="hidden sm:flex items-center justify-between text-[10px] opacity-90 mt-0.5">
+                        <span className="truncate max-w-[75px] font-medium">{schedule.location}</span>
+                        <span className="shrink-0 font-semibold">👥 {schedule.participantCount}명</span>
                       </div>
                     </div>
                   );

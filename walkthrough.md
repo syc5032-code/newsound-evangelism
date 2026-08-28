@@ -1,27 +1,18 @@
-# 뉴사운드교회 노방전도 대시보드 - Awesomic 스타일 시스템 전면 적용 보고서
+# 뉴사운드교회 노방전도 대시보드 - 불필요 텍스트 정리 및 제미나이 아카데미 스타일 텍스트 모션 적용 보고서
 
-요청해주신 **Awesomic Style Reference (Editorial zinc grid with confetti-orange punctuation)**를 완벽하게 반영하여, 그림을 제외한 절제되고 세련된 하이엔드 에디토리얼 디자인으로 전면 개편 완료하였습니다.
+요청하신 대로 상단 히어로 카드의 부가 텍스트들을 모두 정리하고, 제미나이 아카데미(Gemini Academy) 스타일의 **생동감 넘치는 부드러운 스태거(Stagger) & 플로팅 웨이브(Floating Wave) 텍스트 모션**을 사도행전 1:8 말씀에 적용하였습니다.
 
 ---
 
-## 🎨 Awesomic 디자인 시스템 적용 내역
+## 🛠️ 수정 완료 내역
 
-1. **🚫 그림 제거 & 웅장한 에디토리얼 타이포그래피 (Cosmica 600)**
-   - 히어로 영역에서 그림/일러스트를 완전히 제거하고, **36px 둥근 화이트 카드(`#ffffff`)** 위에 거침없고 단단한 **사도행전 1장 8절 볼드 타이포그래피 (`#09090b` Obsidian)**를 배치하였습니다:
-   > **“ 오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅끝까지 이르러 내 증인이 되리라 하시니라 ”**
+1. **🧹 부가 텍스트 일체 제거 (완벽한 미니멀리즘)**
+   - `뉴스통신 노방전도 비전`, `NEWSOUND CHURCH STREET EVANGELISM`, 하단 설명 문구, 거점 안내 텍스트 및 구분선을 모두 제거하여 **오렌지 뱃지(`사도행전 1:8`)**와 **성경 말씀 본문**만 깔끔하게 남겼습니다.
 
-2. **🟠 Confetti-Orange (Ember `#ff5a00`) 펀치 액센트**
-   - 불필요한 다채색 사용을 완전히 배제하고, **`#ff5a00` (Ember)** 단 하나의 포인트 컬러를 **`사도행전 1:8` 뱃지 및 D-Day 하이라이트**에만 절제감 있게 적용하였습니다.
-
-3. **📐 기하학 & 텍스처 (Geometry & Elevation)**
-   - **Canvas**: 따뜻하고 정갈한 Zinc 캔버스 (`#f4f4f5` Paper)
-   - **Cards**: **`36px` / `28px` generous rounding**
-   - **Borders**: 드롭 섀도우를 배제하고 **`1px hairline border (#ececee Cloud)`**로만 면을 구분
-   - **Buttons & Inputs**: **`14px` border radius**
-   - **Pills**: **`10000px` (Full pill)**
-
-4. **⬛ Obsidian Primary Action CTA**
-   - 메인 액션 버튼(`+ 노방전도 신청하기`)은 깊이감 있는 **`#09090b` (Obsidian fill)**과 `14px` radius, hairline border로 완성도 높은 인터랙션을 제공합니다.
+2. **🌊 Gemini Academy 스타일 타이포그래피 모션 (Wave & Stagger Float)**
+   - 페이지 로드 시 각 단어가 **부드럽게 아래에서 위로 순차적 페이드인(Stagger Entrance)** 되며,
+   - 이후 잔잔하고 은혜롭게 위아래로 호흡하듯 물결치는 **부드러운 플로팅 웨이브 모션(Floating Wave)**을 구현했습니다.
+   - 단어에 마우스를 올리면 감각적인 호버 반응(살짝 확대 및 오렌지 엑센트 피드백)을 제공합니다.
 
 ---
 

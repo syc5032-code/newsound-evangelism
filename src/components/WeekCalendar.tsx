@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight, Plus, Users, MapPin } from 'lucide-react';
 import type { EvangelismSchedule } from '../types';
+import { CELL_COLORS } from '../data/presetData';
 import { getDayOfWeekKorean } from '../utils/dateUtils';
 import {
   startOfWeek,
@@ -81,6 +82,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
           const dateStr = format(day, 'yyyy-MM-dd');
           const dayToday = isToday(day);
           const isSun = idx === 0;
+          const isSat = idx === 6;
 
           const dayEvents = schedules
             .filter((s) => s.date === dateStr)
@@ -90,7 +92,13 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
             <div
               key={dateStr}
               className={`p-3 sm:p-4 flex flex-col justify-between ${
-                dayToday ? 'bg-[#f4f4f5]/60' : 'bg-[#ffffff]'
+                dayToday
+                  ? 'bg-[#f4f4f5] ring-1 ring-inset ring-[#09090b]'
+                  : isSun
+                  ? 'bg-rose-50/10'
+                  : isSat
+                  ? 'bg-blue-50/10'
+                  : 'bg-[#ffffff]'
               }`}
             >
               {/* Day Header */}
@@ -98,16 +106,24 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                 <div className="flex items-center justify-between pb-3 border-b border-[#ececee]">
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`text-xs font-medium ${
-                        isSun ? 'text-[#ff5a00]' : 'text-[#71717a]'
+                      className={`text-xs font-bold ${
+                        isSun
+                          ? 'text-rose-600'
+                          : isSat
+                          ? 'text-blue-600'
+                          : 'text-[#71717a]'
                       }`}
                     >
                       {getDayOfWeekKorean(day)}
                     </span>
                     <span
-                      className={`inline-flex items-center justify-center text-xs font-semibold w-6 h-6 rounded-[10000px] ${
+                      className={`inline-flex items-center justify-center text-xs font-bold w-6 h-6 rounded-[10000px] ${
                         dayToday
                           ? 'bg-[#09090b] text-[#ffffff]'
+                          : isSun
+                          ? 'text-rose-600'
+                          : isSat
+                          ? 'text-blue-600'
                           : 'text-[#18181b]'
                       }`}
                     >
@@ -118,7 +134,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                   <button
                     type="button"
                     onClick={() => onOpenApplyModalForDate(dateStr)}
-                    className="p-1 text-[#71717a] hover:text-[#09090b] hover:bg-[#f4f4f5] rounded-[10px] transition-colors cursor-pointer"
+                    className="p-1 text-[#71717a] hover:text-[#09090b] hover:bg-[#ececee] rounded-[10px] transition-colors cursor-pointer"
                     title={`${dateStr} 신청하기`}
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -133,27 +149,28 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                     </div>
                   ) : (
                     dayEvents.map((schedule) => {
+                      const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
                       return (
                         <div
                           key={schedule.id}
                           onClick={() => onSelectSchedule(schedule)}
-                          className="p-2.5 rounded-[16px] border border-[#ececee] bg-[#ffffff] hover:bg-[#f4f4f5] text-left cursor-pointer transition-colors"
+                          className={`p-2.5 rounded-[16px] border text-left cursor-pointer transition-all hover:scale-[1.02] shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
                         >
                           <div className="flex items-center justify-between gap-1">
-                            <span className="font-semibold text-xs text-[#09090b] truncate">
+                            <span className="font-bold text-xs truncate">
                               {schedule.cellName}
                             </span>
-                            <span className="text-[10px] text-[#71717a] shrink-0">
+                            <span className="text-[10px] font-mono opacity-80 shrink-0">
                               {schedule.startTime}
                             </span>
                           </div>
 
-                          <div className="mt-1.5 space-y-0.5 text-[11px] text-[#52525b]">
+                          <div className="mt-1.5 space-y-0.5 text-[11px] opacity-90">
                             <div className="flex items-center gap-1 truncate">
-                              <MapPin className="w-3 h-3 shrink-0 text-[#71717a]" />
-                              <span className="truncate">{schedule.location}</span>
+                              <MapPin className="w-3 h-3 shrink-0" />
+                              <span className="truncate font-medium">{schedule.location}</span>
                             </div>
-                            <div className="flex items-center justify-between text-[10px] text-[#71717a]">
+                            <div className="flex items-center justify-between text-[10px] opacity-80">
                               <span className="flex items-center gap-1">
                                 <Users className="w-3 h-3" /> {schedule.participantCount}명
                               </span>
@@ -171,7 +188,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
               <button
                 type="button"
                 onClick={() => onOpenApplyModalForDate(dateStr)}
-                className="mt-3 py-1.5 px-2 w-full text-xs font-medium text-[#71717a] hover:text-[#09090b] hover:bg-[#f4f4f5] rounded-[12px] border border-[#ececee] transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                className="mt-3 py-1.5 px-2 w-full text-xs font-medium text-[#71717a] hover:text-[#09090b] hover:bg-[#ececee] rounded-[12px] border border-[#ececee] transition-colors flex items-center justify-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>신청</span>
