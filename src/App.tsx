@@ -248,7 +248,7 @@ export function App() {
       />
 
       {/* Main Content Area (Max width 1200px) */}
-      <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-14 sm:pb-16">
         
         {/* Statistics & Overview Banner */}
         <StatsBanner
@@ -323,15 +323,6 @@ export function App() {
         </button>
       </div>
 
-      {/* Footer */}
-      <footer className="mt-auto border-t border-[#ececee] bg-[#ffffff] py-6 text-center text-xs text-[#71717a]">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-normal">© 2026 뉴사운드교회 청년부 노방전도 사역팀</p>
-          <p className="text-[#a1a1aa]">
-            "오직 성령이 너희에게 임하시면 너희가 권능을 받고... 내 증인이 되리라 (행 1:8)"
-          </p>
-        </div>
-      </footer>
 
       {/* Application / Edit Modal */}
       <ApplicationModal
