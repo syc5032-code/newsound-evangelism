@@ -197,35 +197,35 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
           </div>
         </div>
 
-        {/* 5. Dark Feature Card (Next Upcoming Schedule) */}
-        <div className="bg-[#18181b] rounded-[28px] p-5 text-[#ffffff] flex flex-col justify-between border border-[#27272a]">
+        {/* 5. Next Upcoming Schedule Feature Card */}
+        <div className="bg-[#09090b] rounded-[28px] p-5 text-[#ffffff] flex flex-col justify-between border border-[#27272a] shadow-xs">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[#a1a1aa]">다음 출격</span>
+              <span className="text-xs font-bold text-[#e4e4e7] tracking-wide">다음 출격</span>
               {nextUpcoming && (
-                <span className="px-2 py-0.5 rounded-[12px] text-[11px] font-semibold bg-[#ff5a00] text-[#ffffff]">
+                <span className="px-2.5 py-0.5 rounded-[12px] text-[11px] font-bold bg-[#ff5a00] text-[#ffffff] shadow-2xs">
                   {getDDayString(nextUpcoming.date).label}
                 </span>
               )}
             </div>
             {nextUpcoming ? (
-              <div className="mt-2.5">
-                <p className="text-base font-bold text-[#ffffff] tracking-tight truncate">
-                  {nextUpcoming.cellName}
+              <div className="mt-2.5 space-y-1">
+                <p className="text-base font-bold text-[#ffffff] tracking-tight truncate flex items-center gap-1.5">
+                  <span>{nextUpcoming.cellName}</span>
                   {nextUpcoming.corpsName && (
-                    <span className="text-xs font-normal text-[#a1a1aa] ml-1">({nextUpcoming.corpsName})</span>
+                    <span className="text-xs font-medium text-[#cbd5e1]">({nextUpcoming.corpsName})</span>
                   )}
                 </p>
-                <p className="text-xs text-[#d4d4d8] flex items-center gap-1 mt-1 truncate">
-                  <MapPin className="w-3 h-3 shrink-0 text-[#ff5a00]" />
-                  <span className="truncate">{nextUpcoming.location} ({nextUpcoming.participantCount}명)</span>
+                <p className="text-xs text-[#f1f5f9] flex items-center gap-1.5 truncate font-medium">
+                  <MapPin className="w-3.5 h-3.5 shrink-0 text-[#ff5a00]" />
+                  <span className="truncate text-[#ffffff] font-medium">{nextUpcoming.location} · {nextUpcoming.participantCount}명</span>
                 </p>
-                <p className="text-[11px] text-[#71717a] mt-0.5">
-                  {nextUpcoming.date} {nextUpcoming.startTime}
+                <p className="text-xs font-semibold text-[#fed7aa] font-mono">
+                  📅 {nextUpcoming.date} {nextUpcoming.startTime}
                 </p>
               </div>
             ) : (
-              <p className="text-xs text-[#71717a] mt-2.5">
+              <p className="text-xs text-[#a1a1aa] mt-2.5">
                 예정된 다음 일정이 없습니다.
               </p>
             )}
@@ -234,10 +234,10 @@ export const StatsBanner: React.FC<StatsBannerProps> = ({
           {nextUpcoming && (
             <button
               onClick={() => onSelectSchedule(nextUpcoming)}
-              className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[#ffffff] hover:text-[#ff5a00] transition-colors self-end cursor-pointer"
+              className="mt-3.5 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#27272a] hover:bg-[#3f3f46] text-[#ffffff] text-xs font-bold rounded-[12px] border border-[#3f3f46] transition-all self-end cursor-pointer shadow-2xs"
             >
               <span>상세보기</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#ff5a00]" />
             </button>
           )}
         </div>
