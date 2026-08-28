@@ -243,8 +243,8 @@ export function App() {
         onAdminLogout={handleAdminLogout}
       />
 
-      {/* Main Content Area (Max width 1200px) */}
-      <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-14 sm:pb-16">
+      {/* Main Content Area (Max width 1240px) */}
+      <main className="flex-1 max-w-[1240px] w-full mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-12 sm:pb-16">
         
         {/* Statistics & Overview Banner */}
         <StatsBanner

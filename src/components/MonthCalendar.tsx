@@ -61,18 +61,18 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
   const getCellMinHeight = () => {
     switch (visibleWeeks) {
       case 1:
-        return 'min-h-[250px] sm:min-h-[320px]';
+        return 'min-h-[220px] sm:min-h-[300px]';
       case 2:
-        return 'min-h-[165px] sm:min-h-[210px]';
+        return 'min-h-[150px] sm:min-h-[200px]';
       case 3:
-        return 'min-h-[125px] sm:min-h-[165px]';
+        return 'min-h-[115px] sm:min-h-[150px]';
       case 4:
-        return 'min-h-[100px] sm:min-h-[140px]';
+        return 'min-h-[92px] sm:min-h-[118px]';
       case 5:
-        return 'min-h-[85px] sm:min-h-[125px]';
+        return 'min-h-[80px] sm:min-h-[96px]';
       case 6:
       default:
-        return 'min-h-[78px] sm:min-h-[115px]';
+        return 'min-h-[72px] sm:min-h-[82px] lg:min-h-[86px]';
     }
   };
 
@@ -136,16 +136,16 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
       >
         
         {/* 📌 Sticky Month Header + Weekday Bar (달력 보는 동안 상단 고정) */}
-        <div className="sticky top-[70px] sm:top-[68px] z-20 bg-[#ffffff]/98 backdrop-blur-md border-b border-[#ececee] transition-all">
+        <div className="sticky top-[60px] sm:top-[65px] z-20 bg-[#ffffff]/98 backdrop-blur-md border-b border-[#ececee] transition-all">
           
           {/* Month Calendar Navigation Header */}
-          <div className="p-3.5 sm:p-5 flex items-center justify-between gap-2">
+          <div className="px-3.5 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 sm:gap-3">
-              <h2 className="text-base sm:text-2xl font-bold text-[#09090b] tracking-tight">
+              <h2 className="text-base sm:text-xl lg:text-2xl font-bold text-[#09090b] tracking-tight">
                 {format(currentDate, 'yyyy년 M월')}
               </h2>
               {visibleWeeks < totalWeeks && (
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-[10000px] bg-[#09090b] text-[#ffffff]">
+                <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-[10000px] bg-[#09090b] text-[#ffffff]">
                   {visibleWeeks}주 보기
                 </span>
               )}
@@ -155,7 +155,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                   onToday();
                   setSelectedDateStr(todayStr);
                 }}
-                className="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[11px] sm:text-xs font-semibold text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer"
+                className="px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-[11px] sm:text-xs font-semibold text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer"
               >
                 오늘
               </button>
@@ -171,7 +171,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 <button
                   type="button"
                   onClick={onPrevMonth}
-                  className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
+                  className="px-2 sm:px-2.5 py-1 sm:py-1 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
                   title="이전 달"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
@@ -180,7 +180,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 <button
                   type="button"
                   onClick={onNextMonth}
-                  className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
+                  className="px-2 sm:px-2.5 py-1 sm:py-1 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
                   title="다음 달"
                 >
                   <span className="hidden sm:inline">다음 달</span>
@@ -191,7 +191,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
           </div>
 
           {/* Weekday Header (일 ~ 토) */}
-          <div className="grid grid-cols-7 border-t border-[#ececee] bg-[#fafafa]/80 text-center py-2 text-[11px] sm:text-xs font-bold">
+          <div className="grid grid-cols-7 border-t border-[#ececee] bg-[#fafafa]/80 text-center py-1.5 text-[11px] sm:text-xs font-bold">
             {KOREAN_DAYS.map((day, idx) => {
               const isSun = idx === 0;
               const isSat = idx === 6;
@@ -226,7 +226,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
               <div
                 key={day.dateString}
                 onClick={() => setSelectedDateStr(day.dateString)}
-                className={`${cellMinH} p-1 sm:p-2 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group overflow-hidden ${
+                className={`${cellMinH} p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group overflow-hidden ${
                   !day.isCurrentMonth
                     ? 'bg-[#fafafa] text-[#a1a1aa]'
                     : 'bg-[#ffffff] text-[#18181b]'
@@ -242,7 +242,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 <div className="flex items-center justify-between mb-0.5">
                   <div className="flex items-center gap-1 overflow-hidden">
                     <span
-                      className={`inline-flex items-center justify-center text-[11px] sm:text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-[10000px] shrink-0 transition-all ${
+                      className={`inline-flex items-center justify-center text-[10px] sm:text-xs font-bold w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-[10000px] shrink-0 transition-all ${
                         day.isToday
                           ? 'bg-[#09090b] text-[#ffffff] shadow-2xs'
                           : !day.isCurrentMonth
@@ -280,7 +280,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                 </div>
 
                 {/* --- Multiple Event Badges (하루에 여러 개 일정이 줄줄이 잘 보이도록 렌더링) --- */}
-                <div className="flex-1 flex flex-col gap-0.5 sm:gap-1 mt-0.5 overflow-y-auto max-h-[160px] pr-0.5">
+                <div className="flex-1 flex flex-col gap-0.5 mt-0.5 overflow-y-auto max-h-[140px] pr-0.5">
                   {day.events.map((schedule) => {
                     const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
                     return (
@@ -290,7 +290,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                           e.stopPropagation();
                           onSelectSchedule(schedule);
                         }}
-                        className={`px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-[5px] sm:rounded-[7px] border text-[9px] sm:text-[11px] font-bold leading-tight truncate flex flex-col justify-center cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
+                        className={`px-1 py-0.5 rounded-[4px] sm:rounded-[6px] border text-[9px] sm:text-[10px] font-bold leading-tight truncate flex flex-col justify-center cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
                         title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
                       >
                         <div className="flex items-center justify-between gap-0.5 truncate">
@@ -316,7 +316,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         </div>
 
         {/* 🎚️ Bottom Week View Interval Slider (1주 ~ 6주치 슬라이더 바) */}
-        <div className="px-4 py-3 sm:px-6 sm:py-3.5 bg-[#ffffff] border-t border-[#ececee] flex items-center justify-between gap-3">
+        <div className="px-3.5 py-2.5 sm:px-5 sm:py-2.5 bg-[#ffffff] border-t border-[#ececee] flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-xs sm:text-sm font-bold text-[#09090b] w-8 sm:w-10">
               {visibleWeeks}주
