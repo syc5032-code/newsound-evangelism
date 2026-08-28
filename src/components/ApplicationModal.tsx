@@ -283,9 +283,9 @@ export const ApplicationModal: React.FC<ApplicationModalProps> = ({
                 className="w-full pl-3.5 pr-10 py-2.5 text-sm font-semibold bg-slate-50 hover:bg-slate-100/80 focus:bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer text-slate-800"
               >
                 <option value="" disabled>군단을 선택해주세요</option>
-                {CORPS_PRESETS.map((preset, idx) => (
+                {CORPS_PRESETS.map((preset) => (
                   <option key={preset} value={preset}>
-                    {idx + 1}. {preset}
+                    {preset}
                   </option>
                 ))}
                 <option value="__custom__">✏️ 직접 입력하기</option>

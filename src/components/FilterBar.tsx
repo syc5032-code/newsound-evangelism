@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, RotateCcw } from 'lucide-react';
-import { CELL_PRESETS, CORPS_PRESETS, LOCATION_PRESETS } from '../data/presetData';
+import { CELL_PRESETS, CORPS_PRESETS } from '../data/presetData';
 
 interface FilterBarProps {
   searchQuery: string;
@@ -9,8 +9,6 @@ interface FilterBarProps {
   onSelectedCellChange: (cell: string) => void;
   selectedCorps: string;
   onSelectedCorpsChange: (corps: string) => void;
-  selectedLocation: string;
-  onSelectedLocationChange: (loc: string) => void;
   onResetFilters: () => void;
   totalFilteredCount: number;
   availableCells?: string[];
@@ -23,13 +21,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onSelectedCellChange,
   selectedCorps,
   onSelectedCorpsChange,
-  selectedLocation,
-  onSelectedLocationChange,
   onResetFilters,
   totalFilteredCount,
   availableCells,
 }) => {
-  const isFiltered = searchQuery !== '' || selectedCell !== '' || selectedCorps !== '' || selectedLocation !== '';
+  const isFiltered = searchQuery !== '' || selectedCell !== '' || selectedCorps !== '';
 
   const cellsList = availableCells && availableCells.length > 0 ? availableCells : CELL_PRESETS;
 
@@ -91,24 +87,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           {cellsList.map((cell) => (
             <option key={cell} value={cell} className="bg-[#ffffff] text-[#18181b]">
               {cell}
-            </option>
-          ))}
-        </select>
-
-        {/* Location Selector */}
-        <select
-          value={selectedLocation}
-          onChange={(e) => onSelectedLocationChange(e.target.value)}
-          className={`flex-1 sm:flex-initial text-xs sm:text-sm py-2.5 px-3 rounded-[14px] border transition-all cursor-pointer font-medium ${
-            selectedLocation
-              ? 'bg-[#09090b] text-[#ffffff] border-[#09090b]'
-              : 'bg-[#f4f4f5] text-[#18181b] border-[#ececee] hover:bg-[#ececee]/60'
-          } focus:outline-none focus:border-[#09090b]`}
-        >
-          <option value="" className="bg-[#ffffff] text-[#18181b]">전체 전도 장소</option>
-          {LOCATION_PRESETS.map((loc) => (
-            <option key={loc} value={loc} className="bg-[#ffffff] text-[#18181b]">
-              {loc}
             </option>
           ))}
         </select>

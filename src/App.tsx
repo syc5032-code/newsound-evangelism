@@ -27,7 +27,6 @@ export function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCell, setSelectedCell] = useState('');
   const [selectedCorps, setSelectedCorps] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
 
   // 3. Admin & Auth State
   const [isAdmin, setIsAdmin] = useState<boolean>(() => {
@@ -85,8 +84,6 @@ export function App() {
       if (selectedCell && item.cellName !== selectedCell) return false;
       // Corps filter
       if (selectedCorps && item.corpsName !== selectedCorps) return false;
-      // Location filter
-      if (selectedLocation && item.location !== selectedLocation) return false;
       // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -102,7 +99,7 @@ export function App() {
       }
       return true;
     });
-  }, [schedules, selectedCell, selectedCorps, selectedLocation, searchQuery]);
+  }, [schedules, selectedCell, selectedCorps, searchQuery]);
 
   // Calendar days grid
   const calendarDays = useMemo(() => {
@@ -218,7 +215,6 @@ export function App() {
     setSearchQuery('');
     setSelectedCell('');
     setSelectedCorps('');
-    setSelectedLocation('');
   };
 
   return (
@@ -266,8 +262,6 @@ export function App() {
           onSelectedCellChange={setSelectedCell}
           selectedCorps={selectedCorps}
           onSelectedCorpsChange={setSelectedCorps}
-          selectedLocation={selectedLocation}
-          onSelectedLocationChange={setSelectedLocation}
           onResetFilters={handleResetFilters}
           totalFilteredCount={filteredSchedules.length}
           availableCells={availableCells}
