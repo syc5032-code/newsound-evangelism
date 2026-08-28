@@ -10,6 +10,7 @@ interface HeaderProps {
   isAdmin: boolean;
   onOpenAdminLogin: () => void;
   onAdminLogout: () => void;
+  isSupabaseConnected?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -20,6 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
   isAdmin,
   onOpenAdminLogin,
   onAdminLogout,
+  isSupabaseConnected,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-[#ffffff]/95 backdrop-blur-md border-b border-[#ececee]">
@@ -43,6 +45,12 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="inline-flex items-center px-2 py-0.5 rounded-[10000px] text-[11px] font-medium bg-[#f4f4f5] text-[#18181b] border border-[#ececee]">
                   2026 사역
                 </span>
+                {isSupabaseConnected && (
+                  <span className="hidden xs:inline-flex items-center gap-1 px-2 py-0.5 rounded-[10000px] text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" title="실시간 클라우드 DB 연결됨">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>실시간 동기화</span>
+                  </span>
+                )}
                 {isAdmin && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[10000px] text-[11px] font-semibold bg-[#18181b] text-[#ffffff]">
                     <ShieldCheck className="w-3 h-3 text-[#ff5a00]" /> 관리자

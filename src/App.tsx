@@ -16,12 +16,21 @@ import { loadSchedules, saveSchedules, generateKakaoShareText } from './utils/st
 import { generateMonthGrid } from './utils/dateUtils';
 import { addMonths, subMonths } from 'date-fns';
 import { Plus } from 'lucide-react';
+import {
+  fetchAllSchedules,
+  createSchedule,
+  updateSchedule,
+  deleteSchedule,
+  subscribeToScheduleChanges
+} from './services/scheduleService';
+import { getSupabaseConfig } from './lib/supabase';
 
 export function App() {
   // 1. Core Data State
   const [schedules, setSchedules] = useState<EvangelismSchedule[]>(() => loadSchedules());
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(false);
 
   // 2. Filter & Search State
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,7 +65,44 @@ export function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Sync to LocalStorage
+  // ⚡ Load initial data from Supabase & Subscribe to Realtime Updates
+  useEffect(() => {
+    const config = getSupabaseConfig();
+    setIsSupabaseConnected(config.isConfigured);
+
+    // Initial fetch from Supabase
+    fetchAllSchedules().then((data) => {
+      if (data && data.length > 0) {
+        setSchedules(data);
+      }
+    });
+
+    // Subscribe to realtime database changes (0.1s instant live sync!)
+    const unsubscribe = subscribeToScheduleChanges((payload) => {
+      if (payload.eventType === 'INSERT' && payload.new) {
+        const newItem = payload.new;
+        setSchedules((prev) => {
+          if (prev.some((x) => x.id === newItem.id)) return prev;
+          return [newItem, ...prev];
+        });
+        addToast(`[${newItem.cellName}] 새로운 전도 일정이 실시간 등록되었습니다!`, 'info');
+      } else if (payload.eventType === 'UPDATE' && payload.new) {
+        const updatedItem = payload.new;
+        setSchedules((prev) =>
+          prev.map((x) => (x.id === updatedItem.id ? updatedItem : x))
+        );
+      } else if (payload.eventType === 'DELETE' && payload.old) {
+        const deletedId = payload.old.id;
+        setSchedules((prev) => prev.filter((x) => x.id !== deletedId));
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // Sync to LocalStorage (offline cache)
   useEffect(() => {
     saveSchedules(schedules);
   }, [schedules]);
@@ -110,29 +156,32 @@ export function App() {
     );
   }, [currentDate, filteredSchedules]);
 
-  // Schedule Save Handler (Add / Edit / Duplicate)
-  const handleSaveSchedule = (schedule: EvangelismSchedule) => {
+  // Schedule Save Handler (Add / Edit / Duplicate -> Supabase DB + Local)
+  const handleSaveSchedule = async (schedule: EvangelismSchedule) => {
     if (editingSchedule) {
       setSchedules((prev) =>
         prev.map((item) => (item.id === schedule.id ? schedule : item))
       );
       addToast(`[${schedule.cellName}] 일정이 수정되었습니다.`, 'success');
       setEditingSchedule(null);
+      await updateSchedule(schedule);
     } else {
       setSchedules((prev) => [schedule, ...prev]);
       addToast(`[${schedule.cellName}] 노방전도 신청이 완료되었습니다!`, 'success');
       setDuplicateSchedule(null);
+      await createSchedule(schedule);
     }
   };
 
-  // Schedule Delete Handler
-  const handleDeleteSchedule = (id: string) => {
+  // Schedule Delete Handler (Supabase DB + Local)
+  const handleDeleteSchedule = async (id: string) => {
     const target = schedules.find((s) => s.id === id);
     setSchedules((prev) => prev.filter((item) => item.id !== id));
     if (selectedDetailSchedule?.id === id) {
       setSelectedDetailSchedule(null);
     }
     addToast(`[${target?.cellName || '일정'}] 일정이 삭제되었습니다.`, 'info');
+    await deleteSchedule(id);
   };
 
   // Schedule Edit Handler
@@ -235,6 +284,7 @@ export function App() {
         }}
         onOpenDataModal={() => setIsDataModalOpen(true)}
         isAdmin={isAdmin}
+        isSupabaseConnected={isSupabaseConnected}
         onOpenAdminLogin={() => {
           setAuthTargetSchedule(null);
           setAuthActionType('admin-login');
