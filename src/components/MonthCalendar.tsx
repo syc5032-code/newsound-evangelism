@@ -40,28 +40,27 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
   const totalWeeks = allWeeks.length || 6;
   const [visibleWeeks, setVisibleWeeks] = useState<number>(totalWeeks);
 
-  // Determine which weeks to display based on slider (항상 1주차부터 시작하여 N주치 표시)
-  const displayedDays = React.useMemo(() => {
+  // Sliced weeks to display based on slider (항상 1주차부터 N주치)
+  const displayedWeeks = React.useMemo(() => {
     if (visibleWeeks >= totalWeeks) {
-      return calendarDays;
+      return allWeeks;
     }
-    const slicedWeeks = allWeeks.slice(0, visibleWeeks);
-    return slicedWeeks.flat();
-  }, [allWeeks, visibleWeeks, totalWeeks, calendarDays]);
+    return allWeeks.slice(0, visibleWeeks);
+  }, [allWeeks, visibleWeeks, totalWeeks]);
 
   // Dynamic cell minimum height based on visible weeks slider (카드 밖으로 잘리지 않도록 균등 수납)
   const getCellMinHeight = () => {
     switch (visibleWeeks) {
       case 1:
-        return 'min-h-[180px] sm:min-h-[250px]';
+        return 'min-h-[160px] sm:min-h-[220px]';
       case 2:
-        return 'min-h-[125px] sm:min-h-[165px]';
+        return 'min-h-[120px] sm:min-h-[155px]';
       case 3:
         return 'min-h-[95px] sm:min-h-[120px]';
       case 4:
-        return 'min-h-[80px] sm:min-h-[95px]';
+        return 'min-h-[85px] sm:min-h-[100px]';
       case 5:
-        return 'min-h-[75px] sm:min-h-[86px]';
+        return 'min-h-[75px] sm:min-h-[88px]';
       case 6:
       default:
         return 'min-h-[70px] sm:min-h-[80px] lg:min-h-[84px]';
@@ -206,105 +205,109 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
 
         </div>
 
-        {/* Calendar Days Grid (1주 ~ 6주 동적 렌더링) */}
-        <div className="grid grid-cols-7 auto-rows-fr bg-[#ececee] gap-px transition-all">
-          {displayedDays.map((day) => {
-            const isSun = day.isSunday;
-            const isSat = day.isSaturday;
-            const isSelected = day.dateString === selectedDateStr;
-            const cellMinH = getCellMinHeight();
+        {/* Calendar Days Grid (주 단위 Week-by-Week 렌더링으로 4번째 주 잘림 완벽 해결) */}
+        <div className="bg-[#ececee] flex flex-col gap-px transition-all">
+          {displayedWeeks.map((week, weekIdx) => (
+            <div key={weekIdx} className="grid grid-cols-7 gap-px bg-[#ececee]">
+              {week.map((day) => {
+                const isSun = day.isSunday;
+                const isSat = day.isSaturday;
+                const isSelected = day.dateString === selectedDateStr;
+                const cellMinH = getCellMinHeight();
 
-            return (
-              <div
-                key={day.dateString}
-                onClick={() => setSelectedDateStr(day.dateString)}
-                className={`${cellMinH} p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group overflow-hidden ${
-                  !day.isCurrentMonth
-                    ? 'bg-[#fafafa] text-[#a1a1aa]'
-                    : 'bg-[#ffffff] text-[#18181b]'
-                } ${
-                  isSelected
-                    ? 'ring-2 ring-inset ring-[#09090b] bg-[#f4f4f5] z-10'
-                    : day.isToday
-                    ? 'ring-1.5 ring-inset ring-[#09090b] bg-[#f4f4f5]/60'
-                    : 'hover:bg-[#fafafa]'
-                }`}
-              >
-                {/* Day Top Bar */}
-                <div className="flex items-center justify-between mb-0.5">
-                  <div className="flex items-center gap-1 overflow-hidden">
-                    <span
-                      className={`inline-flex items-center justify-center text-[10px] sm:text-xs font-bold w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-[10000px] shrink-0 transition-all ${
-                        day.isToday
-                          ? 'bg-[#09090b] text-[#ffffff] shadow-2xs'
-                          : !day.isCurrentMonth
-                          ? 'text-[#a1a1aa]'
-                          : isSun
-                          ? 'text-rose-600'
-                          : isSat
-                          ? 'text-blue-600'
-                          : 'text-[#18181b]'
-                      }`}
-                    >
-                      {day.dayNumber}
-                    </span>
-                    {day.isToday && (
-                      <span className="hidden sm:inline-block text-[10px] font-extrabold text-[#ff5a00] tracking-wider truncate">
-                        TODAY
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Quick Add Button */}
-                  {day.isCurrentMonth && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenApplyModalForDate(day.dateString);
-                      }}
-                      className="hidden sm:flex opacity-0 group-hover:opacity-100 p-0.5 text-[#71717a] hover:text-[#09090b] hover:bg-[#ececee] rounded-[6px] transition-all cursor-pointer"
-                      title={`${day.dateString} 신청하기`}
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-
-                {/* --- Multiple Event Badges (하루에 여러 개 일정이 줄줄이 잘 보이도록 렌더링) --- */}
-                <div className="flex-1 flex flex-col gap-0.5 mt-0.5 overflow-y-auto max-h-[140px] pr-0.5">
-                  {day.events.map((schedule) => {
-                    const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
-                    return (
-                      <div
-                        key={schedule.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectSchedule(schedule);
-                        }}
-                        className={`px-1 py-0.5 rounded-[4px] sm:rounded-[6px] border text-[9px] sm:text-[10px] font-bold leading-tight truncate flex flex-col justify-center cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
-                        title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
-                      >
-                        <div className="flex items-center justify-between gap-0.5 truncate">
-                          <span className="truncate">{schedule.cellName}</span>
-                          <span className="text-[8px] sm:text-[9px] font-mono opacity-85 shrink-0">
-                            {schedule.startTime}
+                return (
+                  <div
+                    key={day.dateString}
+                    onClick={() => setSelectedDateStr(day.dateString)}
+                    className={`${cellMinH} p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group ${
+                      !day.isCurrentMonth
+                        ? 'bg-[#fafafa] text-[#a1a1aa]'
+                        : 'bg-[#ffffff] text-[#18181b]'
+                    } ${
+                      isSelected
+                        ? 'ring-2 ring-inset ring-[#09090b] bg-[#f4f4f5] z-10'
+                        : day.isToday
+                        ? 'ring-1.5 ring-inset ring-[#09090b] bg-[#f4f4f5]/60'
+                        : 'hover:bg-[#fafafa]'
+                    }`}
+                  >
+                    {/* Day Top Bar */}
+                    <div className="flex items-center justify-between mb-0.5">
+                      <div className="flex items-center gap-1 overflow-hidden">
+                        <span
+                          className={`inline-flex items-center justify-center text-[10px] sm:text-xs font-bold w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-[10000px] shrink-0 transition-all ${
+                            day.isToday
+                              ? 'bg-[#09090b] text-[#ffffff] shadow-2xs'
+                              : !day.isCurrentMonth
+                              ? 'text-[#a1a1aa]'
+                              : isSun
+                              ? 'text-rose-600'
+                              : isSat
+                              ? 'text-blue-600'
+                              : 'text-[#18181b]'
+                          }`}
+                        >
+                          {day.dayNumber}
+                        </span>
+                        {day.isToday && (
+                          <span className="hidden sm:inline-block text-[10px] font-extrabold text-[#ff5a00] tracking-wider truncate">
+                            TODAY
                           </span>
-                        </div>
-                        {visibleWeeks <= 3 && (
-                          <div className="text-[8px] sm:text-[9px] opacity-90 truncate mt-0.5 flex items-center justify-between">
-                            <span className="truncate max-w-[65px] sm:max-w-[85px]">{schedule.location}</span>
-                            <span className="shrink-0 font-semibold">{schedule.participantCount}명</span>
-                          </div>
                         )}
                       </div>
-                    );
-                  })}
-                </div>
 
-              </div>
-            );
-          })}
+                      {/* Quick Add Button */}
+                      {day.isCurrentMonth && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenApplyModalForDate(day.dateString);
+                          }}
+                          className="hidden sm:flex opacity-0 group-hover:opacity-100 p-0.5 text-[#71717a] hover:text-[#09090b] hover:bg-[#ececee] rounded-[6px] transition-all cursor-pointer"
+                          title={`${day.dateString} 신청하기`}
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* --- Multiple Event Badges (하루에 여러 개 일정이 줄줄이 잘 보이도록 렌더링) --- */}
+                    <div className="flex-1 flex flex-col gap-0.5 mt-0.5 overflow-y-auto max-h-[140px] pr-0.5">
+                      {day.events.map((schedule) => {
+                        const colorTheme = CELL_COLORS[schedule.themeColor] || CELL_COLORS.blue;
+                        return (
+                          <div
+                            key={schedule.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectSchedule(schedule);
+                            }}
+                            className={`px-1 py-0.5 rounded-[4px] sm:rounded-[6px] border text-[9px] sm:text-[10px] font-bold leading-tight truncate flex flex-col justify-center cursor-pointer transition-all hover:scale-[1.01] active:scale-95 shadow-2xs ${colorTheme.bg} ${colorTheme.border} ${colorTheme.text}`}
+                            title={`${schedule.cellName} | ${schedule.startTime}~${schedule.endTime} | ${schedule.location} (${schedule.participantCount}명)`}
+                          >
+                            <div className="flex items-center justify-between gap-0.5 truncate">
+                              <span className="truncate">{schedule.cellName}</span>
+                              <span className="text-[8px] sm:text-[9px] font-mono opacity-85 shrink-0">
+                                {schedule.startTime}
+                              </span>
+                            </div>
+                            {visibleWeeks <= 3 && (
+                              <div className="text-[8px] sm:text-[9px] opacity-90 truncate mt-0.5 flex items-center justify-between">
+                                <span className="truncate max-w-[65px] sm:max-w-[85px]">{schedule.location}</span>
+                                <span className="shrink-0 font-semibold">{schedule.participantCount}명</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
 
         {/* 🎚️ Bottom Week View Interval Slider (1주 ~ 6주치 슬라이더 바) */}
