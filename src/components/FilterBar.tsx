@@ -59,21 +59,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       {/* Select Filters */}
       <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
         
-        {/* Cell Selector */}
-        <select
-          value={selectedCell}
-          onChange={(e) => onSelectedCellChange(e.target.value)}
-          className="flex-1 sm:flex-initial text-xs sm:text-sm py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
-        >
-          <option value="">전체 셀 보기</option>
-          {cellsList.map((cell) => (
-            <option key={cell} value={cell}>
-              {cell}
-            </option>
-          ))}
-        </select>
-
-        {/* Corps Selector */}
+        {/* 1. Corps Selector (전체 군단) */}
         <select
           value={selectedCorps}
           onChange={(e) => onSelectedCorpsChange(e.target.value)}
@@ -83,6 +69,20 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           {CORPS_PRESETS.map((corps) => (
             <option key={corps} value={corps}>
               {corps}
+            </option>
+          ))}
+        </select>
+
+        {/* 2. Cell Selector (전체 셀 보기) */}
+        <select
+          value={selectedCell}
+          onChange={(e) => onSelectedCellChange(e.target.value)}
+          className="flex-1 sm:flex-initial text-xs sm:text-sm py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
+        >
+          <option value="">전체 셀 보기</option>
+          {cellsList.map((cell) => (
+            <option key={cell} value={cell}>
+              {cell}
             </option>
           ))}
         </select>
