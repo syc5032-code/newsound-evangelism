@@ -96,8 +96,8 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         className="bg-[#ffffff] rounded-[28px] sm:rounded-[36px] border border-[#ececee] overflow-hidden select-none transition-all shadow-xs"
       >
         
-        {/* 📌 Sticky Month Header + Weekday Bar (달력 보는 동안 상단 고정) */}
-        <div className="sticky top-[60px] sm:top-[65px] z-20 bg-[#ffffff]/98 backdrop-blur-md border-b border-[#ececee] transition-all">
+        {/* Month Navigation Header + Weekday Bar */}
+        <div className="bg-[#ffffff] border-b border-[#ececee]">
           
           {/* Month Calendar Navigation Header (모바일 1줄 고정) */}
           <div className="px-3.5 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between gap-2">
