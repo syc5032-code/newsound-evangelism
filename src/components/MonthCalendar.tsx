@@ -129,14 +129,16 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         {/* 📌 Sticky Month Header + Weekday Bar (달력 보는 동안 상단 고정) */}
         <div className="sticky top-[60px] sm:top-[65px] z-20 bg-[#ffffff]/98 backdrop-blur-md border-b border-[#ececee] transition-all">
           
-          {/* Month Calendar Navigation Header */}
-          <div className="px-3.5 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <h2 className="text-base sm:text-xl lg:text-2xl font-bold text-[#09090b] tracking-tight">
+          {/* Month Calendar Navigation Header (모바일 1줄 고정) */}
+          <div className="px-3 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between gap-2">
+            
+            {/* Left: Year/Month & Today Button */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <h2 className="text-base sm:text-xl lg:text-2xl font-bold text-[#09090b] tracking-tight whitespace-nowrap">
                 {format(currentDate, 'yyyy년 M월')}
               </h2>
               {visibleWeeks < totalWeeks && (
-                <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-[10000px] bg-[#09090b] text-[#ffffff]">
+                <span className="hidden sm:inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-[10000px] bg-[#09090b] text-[#ffffff] whitespace-nowrap">
                   {visibleWeeks}주 보기
                 </span>
               )}
@@ -146,39 +148,34 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                   onToday();
                   setSelectedDateStr(todayStr);
                 }}
-                className="px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-[11px] sm:text-xs font-semibold text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer"
+                className="px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-xs font-semibold text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
                 오늘
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="sm:hidden text-[10px] text-[#71717a] font-medium flex items-center gap-1 bg-[#f4f4f5] px-2 py-1 rounded-[10000px] border border-[#ececee] whitespace-nowrap">
-                👈 스와이프 이동 👉
-              </span>
-
-              {/* Month Navigation Arrows */}
-              <div className="flex items-center gap-0.5 sm:gap-1 bg-[#f4f4f5] p-0.5 sm:p-1 rounded-[12px] sm:rounded-[14px] border border-[#ececee]">
-                <button
-                  type="button"
-                  onClick={onPrevMonth}
-                  className="px-2 sm:px-2.5 py-1 sm:py-1 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
-                  title="이전 달"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">이전 달</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={onNextMonth}
-                  className="px-2 sm:px-2.5 py-1 sm:py-1 rounded-[8px] sm:rounded-[10px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
-                  title="다음 달"
-                >
-                  <span className="hidden sm:inline">다음 달</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
+            {/* Right: Prev / Next Navigation Arrows */}
+            <div className="flex items-center gap-1 bg-[#f4f4f5] p-0.5 sm:p-1 rounded-[10px] sm:rounded-[12px] border border-[#ececee] shrink-0">
+              <button
+                type="button"
+                onClick={onPrevMonth}
+                className="p-1 sm:px-2.5 sm:py-1 rounded-[7px] sm:rounded-[9px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
+                title="이전 달"
+              >
+                <ChevronLeft className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                <span className="hidden sm:inline">이전 달</span>
+              </button>
+              <button
+                type="button"
+                onClick={onNextMonth}
+                className="p-1 sm:px-2.5 sm:py-1 rounded-[7px] sm:rounded-[9px] text-xs font-medium text-[#18181b] hover:bg-[#ffffff] hover:border hover:border-[#ececee] transition-all flex items-center gap-1 cursor-pointer"
+                title="다음 달"
+              >
+                <span className="hidden sm:inline">다음 달</span>
+                <ChevronRight className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+              </button>
             </div>
+
           </div>
 
           {/* Weekday Header (일 ~ 토) */}
