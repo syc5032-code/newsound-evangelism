@@ -28,7 +28,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
   const todayStr = format(new Date(), 'yyyy-MM-dd');
   const [selectedDateStr, setSelectedDateStr] = useState<string>(todayStr);
 
-  // 🎚️ Chunk calendarDays into 7-day weeks
+  // Chunk calendarDays into 7-day weeks for complete month display
   const allWeeks: CalendarDay[][] = React.useMemo(() => {
     const weeks: CalendarDay[][] = [];
     for (let i = 0; i < calendarDays.length; i += 7) {
@@ -36,36 +36,6 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
     }
     return weeks;
   }, [calendarDays]);
-
-  const totalWeeks = allWeeks.length || 6;
-  const [visibleWeeks, setVisibleWeeks] = useState<number>(totalWeeks);
-
-  // Sliced weeks to display based on slider (항상 1주차부터 N주치)
-  const displayedWeeks = React.useMemo(() => {
-    if (visibleWeeks >= totalWeeks) {
-      return allWeeks;
-    }
-    return allWeeks.slice(0, visibleWeeks);
-  }, [allWeeks, visibleWeeks, totalWeeks]);
-
-  // Dynamic cell minimum height based on visible weeks slider (카드 밖으로 잘리지 않도록 균등 수납)
-  const getCellMinHeight = () => {
-    switch (visibleWeeks) {
-      case 1:
-        return 'min-h-[160px] sm:min-h-[220px]';
-      case 2:
-        return 'min-h-[120px] sm:min-h-[155px]';
-      case 3:
-        return 'min-h-[95px] sm:min-h-[120px]';
-      case 4:
-        return 'min-h-[85px] sm:min-h-[100px]';
-      case 5:
-        return 'min-h-[75px] sm:min-h-[88px]';
-      case 6:
-      default:
-        return 'min-h-[70px] sm:min-h-[80px] lg:min-h-[84px]';
-    }
-  };
 
   // 📱 Touch Swipe Handlers for Month Navigation
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -130,25 +100,20 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         <div className="sticky top-[60px] sm:top-[65px] z-20 bg-[#ffffff]/98 backdrop-blur-md border-b border-[#ececee] transition-all">
           
           {/* Month Calendar Navigation Header (모바일 1줄 고정) */}
-          <div className="px-3 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between gap-2">
+          <div className="px-3.5 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between gap-2">
             
             {/* Left: Year/Month & Today Button */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <h2 className="text-base sm:text-xl lg:text-2xl font-bold text-[#09090b] tracking-tight whitespace-nowrap">
                 {format(currentDate, 'yyyy년 M월')}
               </h2>
-              {visibleWeeks < totalWeeks && (
-                <span className="hidden sm:inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-[10000px] bg-[#09090b] text-[#ffffff] whitespace-nowrap">
-                  {visibleWeeks}주 보기
-                </span>
-              )}
               <button
                 type="button"
                 onClick={() => {
                   onToday();
                   setSelectedDateStr(todayStr);
                 }}
-                className="px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-xs font-semibold text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                className="px-2.5 py-0.5 sm:px-2.5 sm:py-0.5 text-xs font-semibold text-[#18181b] bg-[#f4f4f5] hover:bg-[#ececee] rounded-[10000px] border border-[#ececee] transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
                 오늘
               </button>
@@ -202,21 +167,20 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
 
         </div>
 
-        {/* Calendar Days Grid (주 단위 Week-by-Week 렌더링으로 4번째 주 잘림 완벽 해결) */}
+        {/* Calendar Days Grid (한 달 전체 주 단위 렌더링) */}
         <div className="bg-[#ececee] flex flex-col gap-px transition-all">
-          {displayedWeeks.map((week, weekIdx) => (
+          {allWeeks.map((week, weekIdx) => (
             <div key={weekIdx} className="grid grid-cols-7 gap-px bg-[#ececee]">
               {week.map((day) => {
                 const isSun = day.isSunday;
                 const isSat = day.isSaturday;
                 const isSelected = day.dateString === selectedDateStr;
-                const cellMinH = getCellMinHeight();
 
                 return (
                   <div
                     key={day.dateString}
                     onClick={() => setSelectedDateStr(day.dateString)}
-                    className={`${cellMinH} p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group ${
+                    className={`min-h-[72px] sm:min-h-[82px] lg:min-h-[86px] p-1 sm:p-1.5 bg-[#ffffff] transition-all relative flex flex-col justify-between cursor-pointer group ${
                       !day.isCurrentMonth
                         ? 'bg-[#fafafa] text-[#a1a1aa]'
                         : 'bg-[#ffffff] text-[#18181b]'
@@ -289,12 +253,6 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                                 {schedule.startTime}
                               </span>
                             </div>
-                            {visibleWeeks <= 3 && (
-                              <div className="text-[8px] sm:text-[9px] opacity-90 truncate mt-0.5 flex items-center justify-between">
-                                <span className="truncate max-w-[65px] sm:max-w-[85px]">{schedule.location}</span>
-                                <span className="shrink-0 font-semibold">{schedule.participantCount}명</span>
-                              </div>
-                            )}
                           </div>
                         );
                       })}
@@ -305,52 +263,6 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
               })}
             </div>
           ))}
-        </div>
-
-        {/* 🎚️ Bottom Week View Interval Slider (1주 ~ 6주치 슬라이더 바) */}
-        <div className="px-3.5 py-2.5 sm:px-5 sm:py-2.5 bg-[#ffffff] border-t border-[#ececee] flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs sm:text-sm font-bold text-[#09090b] w-8 sm:w-10">
-              {visibleWeeks}주
-            </span>
-          </div>
-
-          <div className="flex-1 max-w-[280px] sm:max-w-[360px] flex items-center gap-2">
-            <input
-              type="range"
-              min={1}
-              max={totalWeeks}
-              step={1}
-              value={visibleWeeks}
-              onChange={(e) => setVisibleWeeks(Number(e.target.value))}
-              className="w-full h-1.5 bg-[#e4e4e7] rounded-lg appearance-none cursor-pointer accent-[#09090b]"
-            />
-          </div>
-
-          <div className="flex items-center gap-1 shrink-0">
-            <button
-              type="button"
-              onClick={() => setVisibleWeeks(totalWeeks)}
-              className={`px-2.5 py-1 text-[11px] font-semibold rounded-[8px] border transition-colors cursor-pointer ${
-                visibleWeeks === totalWeeks
-                  ? 'bg-[#09090b] text-[#ffffff] border-[#09090b]'
-                  : 'bg-[#f4f4f5] text-[#71717a] border-[#ececee] hover:text-[#09090b]'
-              }`}
-            >
-              전체({totalWeeks}주)
-            </button>
-            <button
-              type="button"
-              onClick={() => setVisibleWeeks(visibleWeeks === 1 ? totalWeeks : 1)}
-              className={`px-2.5 py-1 text-[11px] font-semibold rounded-[8px] border transition-colors cursor-pointer ${
-                visibleWeeks === 1
-                  ? 'bg-[#09090b] text-[#ffffff] border-[#09090b]'
-                  : 'bg-[#f4f4f5] text-[#71717a] border-[#ececee] hover:text-[#09090b]'
-              }`}
-            >
-              1주치
-            </button>
-          </div>
         </div>
 
       </div>
